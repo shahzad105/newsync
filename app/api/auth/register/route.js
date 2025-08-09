@@ -51,7 +51,7 @@ export async function POST(req) {
     const token = user.getVerificationToken();
     await user.save({ validateBeforeSave: false });
 
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify/${token}?email=${email}`;
+    const verificationUrl = `${process.env.FRONTEND_URL}/auth/verify-email/${token}?email=${email}`;
     const message = getVerificationEmailTemplate(username, verificationUrl);
 
     try {
