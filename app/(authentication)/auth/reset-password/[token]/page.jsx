@@ -1,7 +1,7 @@
 import ResetForm from "@/components/ResetForm";
 
 export const metadata = {
-  title: "Reset Password - NewsSync",
+  title: "Reset Password | NewsSync",
   description: "Set a new password for your account.",
 };
 

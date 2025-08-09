@@ -10,8 +10,8 @@ export async function generateMetadata(props) {
   const filters = searchParams?.category?.split(",") ?? [];
 
   const title = query
-    ? `Search results for "${query}" - NewsSync`
-    : "Search - NewsSync";
+    ? `Search results for "${query}" | NewsSync`
+    : "Search | NewsSync";
 
   const description = `Browse news articles on NewsSync${
     query ? ` matching "${query}"` : ""

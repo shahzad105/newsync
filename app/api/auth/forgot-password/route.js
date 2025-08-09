@@ -21,7 +21,7 @@ export async function POST(req) {
     const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/auth/reset-password/${resetToken}`;
     const message = getForgotPasswordEmailTemplate(user.username, resetUrl);
 
     try {

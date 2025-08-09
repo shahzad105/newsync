@@ -9,7 +9,7 @@ import { Suspense } from "react";
 
 // ✅ SEO Metadata for HomePage
 export async function generateMetadata() {
-  const siteUrl = process.env.SITE_URL || "https://newsync.com";
+  const siteUrl = process.env.SITE_URL || "https://newsync.site";
   const title = "NewsSync - Latest Business, Sports, Health & Tech News";
   const description =
     "Stay updated with the latest news from Business, Sports, Health, Technology, and more on NewsSync. Real-time stories curated just for you.";
