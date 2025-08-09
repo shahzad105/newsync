@@ -58,7 +58,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // On sign in
       if (user) {
         token.id = user._id;
         token.email = user.email;
@@ -68,7 +67,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.avatar = user.avatar;
       }
 
-      // ✅ On client session.update()
       if (trigger === "update" && session) {
         if (session.username) token.username = session.username;
         if (session.avatar) token.avatar = session.avatar;
@@ -89,6 +87,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.isVerified = token.isVerified;
       session.user.avatar = token.avatar;
       return session;
+    },
+  },
+  cookies: {
+    sessionToken: {
+      name:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.session-token"
+          : "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production", // ✅ secure only in prod
+      },
     },
   },
   pages: {

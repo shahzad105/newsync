@@ -75,7 +75,7 @@ export default function LoginForm() {
 
       <div className="text-right">
         <Link
-          href="/forgot-password"
+          href="/auth/forgot-password"
           className="text-sm text-blue-600 hover:underline flex justify-end items-center gap-1"
         >
           <MdLockOutline size={16} /> Forgot Password?
