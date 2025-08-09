@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import PostPageSkeleton from "@/skeletons/PostLoadingSkeleton";
+import NativeBannerAd from "@/components/ads/NativeBanner";
 
 async function getArticle(slug) {
   const res = await fetch(`${process.env.SITE_URL}/api/article/${slug}`, {
@@ -98,6 +99,7 @@ export default async function PostPage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
+      <NativeBannerAd />
 
       <div className="md:px-4 md:py-8">
         {/* Breadcrumb */}

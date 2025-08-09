@@ -1,3 +1,4 @@
+import NativeBannerAd from "@/components/ads/NativeBanner";
 import Hero from "@/components/Hero";
 import BusinessAutoLayout from "@/layouts/BusinessAuto";
 import LatestReadmore from "@/layouts/LatestReadMore";
@@ -10,7 +11,7 @@ import { Suspense } from "react";
 // ✅ SEO Metadata for HomePage
 export async function generateMetadata() {
   const siteUrl = process.env.SITE_URL || "https://newsync.site";
-  const title = "NewsSync - Latest Business, Sports, Health & Tech News";
+  const title = "Newsync - Latest Business, Sports, Health & Tech News";
   const description =
     "Stay updated with the latest news from Business, Sports, Health, Technology, and more on NewsSync. Real-time stories curated just for you.";
   const ogImage = `${siteUrl}/newsync.png`;
@@ -84,10 +85,10 @@ export default async function HomePage() {
       <Suspense fallback={<HeroSkeleton />}>
         <Hero articles={heroArticles?.articles} />
       </Suspense>
-
       <NewsSectionLayout sportsArticles={sportsArticles?.articles} />
       <BusinessAutoLayout />
       <LatestReadmore latestArtocles={latestArticles?.articles} />
+      <NativeBannerAd />
     </>
   );
 }

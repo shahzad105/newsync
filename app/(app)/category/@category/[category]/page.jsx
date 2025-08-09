@@ -1,3 +1,5 @@
+import AdsterraSmallBanner from "@/components/ads/AdsterraSmallBanner";
+import NativeBannerAd from "@/components/ads/NativeBanner";
 import CustomPagination from "@/components/CustomPagination";
 import News from "@/components/News";
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
@@ -157,6 +159,8 @@ export default async function CategoryPage(props) {
           </div>
         )}
       </div>
+
+      <NativeBannerAd />
     </>
   );
 }

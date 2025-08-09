@@ -10,7 +10,6 @@ export default function ArticlesLayout({ children }) {
       <Logo />
       <NavServer />
       <div className="container mx-auto space-y-10 w-full p-2 md:p-0">
-        {" "}
         {children}
       </div>
       <Footer />

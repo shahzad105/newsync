@@ -3,6 +3,7 @@ import News from "@/components/News";
 import CustomPagination from "@/components/CustomPagination";
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import { Suspense } from "react";
+import NativeBannerAd from "@/components/ads/NativeBanner";
 
 export async function generateMetadata(props) {
   const searchParams = await props.searchParams;
@@ -72,33 +73,38 @@ export default async function SearchPage(props) {
   const totalPages = data?.totalPages || 1;
 
   return (
-    <div className="flex flex-col pt-3 gap-6">
-      <div className="flex md:flex-row flex-col items-start justify-between gap-4 rounded">
-        <h2 className="text-lg font-semibold text-blue-900">
-          Search Results for: "{query || "All"}"
-        </h2>
-        <SearchCategory filters={filters} />
+    <>
+      <div className="flex flex-col pt-3 gap-6">
+        <div className="flex md:flex-row flex-col items-start justify-between gap-4 rounded">
+          <h2 className="text-lg font-semibold text-blue-900">
+            Search Results for: "{query || "All"}"
+          </h2>
+          <SearchCategory filters={filters} />
+        </div>
+
+        <main className="relative min-h-[300px]">
+          <Suspense fallback={<NewsSkeleton />}>
+            {articles.length > 0 ? (
+              <>
+                <News post={articles} />
+                <div className="mt-6">
+                  <CustomPagination
+                    currentPage={page - 1}
+                    pageCount={totalPages}
+                  />
+                </div>
+              </>
+            ) : (
+              <p className="text-center text-gray-600 mt-10">
+                No results found for "{query}".
+              </p>
+            )}
+          </Suspense>
+        </main>
       </div>
 
-      <main className="relative min-h-[300px]">
-        <Suspense fallback={<NewsSkeleton />}>
-          {articles.length > 0 ? (
-            <>
-              <News post={articles} />
-              <div className="mt-6">
-                <CustomPagination
-                  currentPage={page - 1}
-                  pageCount={totalPages}
-                />
-              </div>
-            </>
-          ) : (
-            <p className="text-center text-gray-600 mt-10">
-              No results found for "{query}".
-            </p>
-          )}
-        </Suspense>
-      </main>
-    </div>
+      <NativeBannerAd />
+      <AdsterraSmallBanner id="small-banner-2" />
+    </>
   );
 }
