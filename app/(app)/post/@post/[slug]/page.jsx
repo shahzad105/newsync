@@ -99,7 +99,6 @@ export default async function PostPage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <NativeBannerAd />
 
       <div className="md:px-4 md:py-8">
         {/* Breadcrumb */}
@@ -154,6 +153,7 @@ export default async function PostPage({ params }) {
           )}
         </Suspense>
       </div>
+      <NativeBannerAd />
     </>
   );
 }
