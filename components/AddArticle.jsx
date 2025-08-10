@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useAddArticle } from "@/hooks/useAddArticle";
 import toast from "react-hot-toast";
+import { pingSearchEngines } from "@/lib/googlePing";
 
 export default function AddArticleForm() {
   const fileInputRef = useRef(null);
@@ -46,6 +47,7 @@ export default function AddArticleForm() {
         description: body,
         image: preview,
       });
+      await pingSearchEngines();
       toast.success("Article published!");
 
       setTitle("");

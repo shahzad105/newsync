@@ -1,4 +1,3 @@
-import AdsterraSmallBanner from "@/components/ads/AdsterraSmallBanner";
 import NativeBannerAd from "@/components/ads/NativeBanner";
 import CustomPagination from "@/components/CustomPagination";
 import News from "@/components/News";
@@ -7,11 +6,8 @@ import Link from "next/link";
 import Script from "next/script";
 import React, { Suspense } from "react";
 
-// ✅ SEO Metadata
-export async function generateMetadata(props) {
-  const params = await props.params;
-  const searchParams = await props.searchParams;
-
+// ✅ Metadata generation for SEO
+export async function generateMetadata({ params, searchParams }) {
   const categoryParam = params.category || "";
   const formattedCategory =
     categoryParam.charAt(0).toUpperCase() +
@@ -19,7 +15,6 @@ export async function generateMetadata(props) {
 
   const pageNum = parseInt(searchParams.page) || 1;
 
-  // ✅ Fetch first article for OG image
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}`,
     { cache: "no-store" }
@@ -30,6 +25,7 @@ export async function generateMetadata(props) {
 
   const title = `${formattedCategory} News - Page ${pageNum} | NewsSync`;
   const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum} of curated articles.`;
+  const pageUrl = `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`;
 
   return {
     title,
@@ -37,7 +33,7 @@ export async function generateMetadata(props) {
     openGraph: {
       title,
       description,
-      url: `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`,
+      url: pageUrl,
       siteName: "NewsSync",
       type: "website",
       images: [
@@ -56,7 +52,7 @@ export async function generateMetadata(props) {
       images: [firstImage],
     },
     alternates: {
-      canonical: `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`,
+      canonical: pageUrl,
     },
     robots: {
       index: true,
@@ -65,18 +61,16 @@ export async function generateMetadata(props) {
   };
 }
 
-// ✅ Main Category Page Component
-export default async function CategoryPage(props) {
-  const params = await props.params;
-  const searchParams = await props.searchParams;
-
+// ✅ Main Category Page
+export default async function CategoryPage({ params, searchParams }) {
   const categoryParam = params.category || "";
   const formattedCategory =
     categoryParam.charAt(0).toUpperCase() +
     categoryParam.slice(1).toLowerCase();
+
   const pageNum = parseInt(searchParams.page) || 1;
 
-  // ✅ Fetch Articles for this Category
+  // Fetch articles for this category
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=5&page=${pageNum}`,
     { cache: "no-store" }
@@ -85,26 +79,27 @@ export default async function CategoryPage(props) {
   const articles = data?.articles ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  // ✅ JSON-LD Schema for ItemList (SEO)
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: articles.map((post, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: `${process.env.SITE_URL}/post/${post.slug}`,
-      name: post.title,
-    })),
-  };
-
   return (
     <>
-      {/* ✅ Structured Data */}
+      {/* ✅ Structured Data for Google */}
       <Script
-        id="category-jsonld"
+        id="category-structured-data"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+        strategy="afterInteractive"
+      >
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: `${formattedCategory} News - NewsSync`,
+          description: `Latest ${formattedCategory} news and updates from NewsSync.`,
+          url: `https://newsync.site/category/${categoryParam}`,
+          isPartOf: {
+            "@type": "WebSite",
+            name: "NewsSync",
+            url: "https://newsync.site",
+          },
+        })}
+      </Script>
 
       <div className="relative md:py-10 space-y-5">
         {/* Breadcrumb */}

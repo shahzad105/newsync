@@ -5,10 +5,12 @@ import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import { Suspense } from "react";
 import NativeBannerAd from "@/components/ads/NativeBanner";
 import AdsterraSmallBanner from "@/components/ads/AdsterraSmallBanner";
-export async function generateMetadata(props) {
-  const searchParams = await props.searchParams;
+
+// ✅ SEO Metadata
+export async function generateMetadata({ searchParams }) {
   const query = searchParams?.search ?? "";
-  const filters = searchParams?.category?.split(",") ?? [];
+  const filters = searchParams?.category?.split(",").filter(Boolean) ?? [];
+  const pageNum = parseInt(searchParams?.page ?? "1", 10);
 
   const title = query
     ? `Search results for "${query}" | NewsSync`
@@ -16,11 +18,13 @@ export async function generateMetadata(props) {
 
   const description = `Browse news articles on NewsSync${
     query ? ` matching "${query}"` : ""
-  }${filters.length > 0 ? ` in categories: ${filters.join(", ")}` : ""}.`;
+  }${
+    filters.length > 0 ? ` in categories: ${filters.join(", ")}` : ""
+  }. Page ${pageNum}.`;
 
   const fullUrl = `${process.env.SITE_URL}/posts?search=${encodeURIComponent(
     query
-  )}&category=${filters.join(",")}`;
+  )}&category=${filters.join(",")}&page=${pageNum}`;
 
   return {
     title,
@@ -37,9 +41,17 @@ export async function generateMetadata(props) {
       title,
       description,
     },
+    alternates: {
+      canonical: fullUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
+// ✅ API fetch helper
 async function fetchArticles({ search, category, page }) {
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?search=${encodeURIComponent(
@@ -47,21 +59,18 @@ async function fetchArticles({ search, category, page }) {
     )}&category=${encodeURIComponent(
       category
     )}&page=${page}&limit=6&latest=true`,
-    {
-      cache: "no-store",
-    }
+    { cache: "no-store" }
   );
 
   if (!res.ok) throw new Error("Failed to fetch articles");
   return res.json();
 }
 
-export default async function SearchPage(props) {
-  const searchParams = await props.searchParams;
-
+// ✅ Main Search Page
+export default async function SearchPage({ searchParams }) {
   const query = searchParams?.search ?? "";
   const page = parseInt(searchParams?.page ?? "1", 10);
-  const filters = searchParams?.category?.split(",") ?? [];
+  const filters = searchParams?.category?.split(",").filter(Boolean) ?? [];
 
   const data = await fetchArticles({
     search: query,
@@ -76,12 +85,13 @@ export default async function SearchPage(props) {
     <>
       <div className="flex flex-col pt-3 gap-6">
         <div className="flex md:flex-row flex-col items-start justify-between gap-4 rounded">
-          <h2 className="text-lg font-semibold text-blue-900">
+          <h1 className="text-lg font-semibold text-blue-900">
             Search Results for: "{query || "All"}"
-          </h2>
+          </h1>
           <SearchCategory filters={filters} />
         </div>
 
+        {/* Results */}
         <main className="relative min-h-[300px]">
           <Suspense fallback={<NewsSkeleton />}>
             {articles.length > 0 ? (
@@ -103,6 +113,7 @@ export default async function SearchPage(props) {
         </main>
       </div>
 
+      {/* Ads */}
       <NativeBannerAd />
       <AdsterraSmallBanner id="small-banner-2" />
     </>
