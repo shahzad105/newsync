@@ -21,7 +21,7 @@ export default function RegistrationForm() {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md space-y-6 px-4">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white text-center">
-            Welcome to NewsSync
+            Welcome to NewSync
           </h1>
           <form
             onSubmit={(e) => {
@@ -68,7 +68,7 @@ export default function RegistrationForm() {
       </div>
 
       <div className="hidden md:flex flex-1 bg-gradient-to-tr from-blue-600 to-indigo-700 items-center justify-center">
-        <img src={loginImage.src} alt="NewsSync signup" className="max-w-sm" />
+        <img src={loginImage.src} alt="NewSync signup" className="max-w-sm" />
       </div>
     </div>
   );

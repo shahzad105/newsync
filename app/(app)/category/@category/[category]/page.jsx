@@ -23,7 +23,7 @@ export async function generateMetadata({ params, searchParams }) {
   const firstImage =
     data?.articles?.[0]?.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
-  const title = `${formattedCategory} News - Page ${pageNum} | NewsSync`;
+  const title = `${formattedCategory} News - Page ${pageNum} | NewSync`;
   const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum} of curated articles.`;
   const pageUrl = `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`;
 
@@ -34,7 +34,7 @@ export async function generateMetadata({ params, searchParams }) {
       title,
       description,
       url: pageUrl,
-      siteName: "NewsSync",
+      siteName: "NewSync",
       type: "website",
       images: [
         {
@@ -90,12 +90,12 @@ export default async function CategoryPage({ params, searchParams }) {
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "CollectionPage",
-          name: `${formattedCategory} News - NewsSync`,
-          description: `Latest ${formattedCategory} news and updates from NewsSync.`,
+          name: `${formattedCategory} News - NewSync`,
+          description: `Latest ${formattedCategory} news and updates from NewSync.`,
           url: `https://newsync.site/category/${categoryParam}`,
           isPartOf: {
             "@type": "WebSite",
-            name: "NewsSync",
+            name: "NewSync",
             url: "https://newsync.site",
           },
         })}

@@ -6,13 +6,13 @@ import { redirect } from "next/navigation";
 import { getActivities } from "@/lib/actions/getActivities";
 
 export const metadata = {
-  title: "Profile | NewsSync",
+  title: "Profile | NewSync",
   description: "View and manage your profile details",
   openGraph: {
-    title: "Profile - NewsSync",
+    title: "Profile - NewSync",
     description: "View and manage your profile details",
     url: "https://newsync.site/profile",
-    siteName: "NewsSync",
+    siteName: "NewSync",
     images: [
       {
         url: "/user.png",

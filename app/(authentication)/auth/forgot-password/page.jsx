@@ -1,7 +1,7 @@
 import ForgotPasswordForm from "@/components/ForgotPasswordForm";
 
 export const metadata = {
-  title: "Forgot Password - NewsSync",
+  title: "Forgot Password - NewSync",
   description: "Reset your password via email link",
 };
 

@@ -1,7 +1,7 @@
 import { MdMarkEmailRead } from "react-icons/md";
 
 export const metadata = {
-  title: "Email Sent | NewsSync",
+  title: "Email Sent | NewSync",
   description: "Check your email for verification",
 };
 

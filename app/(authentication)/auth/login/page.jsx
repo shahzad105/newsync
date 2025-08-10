@@ -4,7 +4,7 @@ import LoginForm from "@/components/LoginForm";
 import loginGraphic from "@/public/modern-login-illustration.svg";
 
 export const metadata = {
-  title: "Login - NewsSync",
+  title: "Login - NewSync",
   description: "Login to your account",
 };
 

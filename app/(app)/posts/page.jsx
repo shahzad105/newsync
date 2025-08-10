@@ -13,10 +13,10 @@ export async function generateMetadata({ searchParams }) {
   const pageNum = parseInt(searchParams?.page ?? "1", 10);
 
   const title = query
-    ? `Search results for "${query}" | NewsSync`
-    : "Search | NewsSync";
+    ? `Search results for "${query}" | NewSync`
+    : "Search | NewSync";
 
-  const description = `Browse news articles on NewsSync${
+  const description = `Browse news articles on NewSync${
     query ? ` matching "${query}"` : ""
   }${
     filters.length > 0 ? ` in categories: ${filters.join(", ")}` : ""
@@ -33,7 +33,7 @@ export async function generateMetadata({ searchParams }) {
       title,
       description,
       url: fullUrl,
-      siteName: "NewsSync",
+      siteName: "NewSync",
       type: "website",
     },
     twitter: {

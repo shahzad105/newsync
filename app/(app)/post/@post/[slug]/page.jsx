@@ -20,15 +20,15 @@ export async function generateMetadata({ params }) {
 
   if (!post) {
     return {
-      title: "404 - Post Not Found | NewsSync",
+      title: "404 - Post Not Found | NewSync",
       description: `No blog post found for ${slug}`,
       robots: { index: false, follow: false },
     };
   }
 
-  const title = `${post.title} | NewsSync`;
+  const title = `${post.title} | NewSync`;
   const description =
-    post.description?.slice(0, 150) || "Read the latest article on NewsSync.";
+    post.description?.slice(0, 150) || "Read the latest article on NewSync.";
   const url = `${process.env.SITE_URL}/post/${slug}`;
   const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url,
-      siteName: "NewsSync",
+      siteName: "NewSync",
       type: "article",
       images: [{ url: image, width: 1200, height: 630, alt: post.title }],
     },
@@ -67,7 +67,7 @@ export default async function PostPage({ params }) {
         headline: post.title,
         description:
           post.description?.slice(0, 150) ||
-          "Read the latest article on NewsSync.",
+          "Read the latest article on NewSync.",
         image: [post.image?.url || `${process.env.SITE_URL}/newsync.png`],
         author: {
           "@type": "Person",
@@ -75,7 +75,7 @@ export default async function PostPage({ params }) {
         },
         publisher: {
           "@type": "Organization",
-          name: "NewsSync",
+          name: "NewSync",
           logo: {
             "@type": "ImageObject",
             url: `${process.env.SITE_URL}/logo.png`,

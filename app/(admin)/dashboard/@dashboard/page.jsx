@@ -13,21 +13,21 @@ import { Suspense } from "react";
 export async function generateMetadata() {
   const stats = await getDashboardData();
   return {
-    title: "Dashboard | NewsSync",
+    title: "Dashboard | NewSync",
     description: `Total ${stats?.totalArticles || 0} articles, ${
       stats?.totalUsers || 0
     } users, top category: ${stats?.topCategory?.category || "N/A"}`,
     openGraph: {
-      title: "Dashboard | NewsSync",
+      title: "Dashboard | NewSync",
       description: `Articles: ${stats?.totalArticles || 0}, Top category: ${
         stats?.topCategory?.category || "N/A"
       }`,
-      siteName: "NewsSync",
+      siteName: "NewSync",
       type: "website",
     },
     twitter: {
       card: "summary",
-      title: "Dashboard | NewsSync",
+      title: "Dashboard | NewSync",
       description: `Articles: ${stats?.totalArticles || 0}, Users: ${
         stats?.totalUsers || 0
       }`,

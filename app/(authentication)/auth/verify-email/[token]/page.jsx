@@ -3,7 +3,7 @@
 import VerifyEmail from "@/components/VerifyEmail";
 
 export const metadata = {
-  title: "Verify Email | NewsSync",
+  title: "Verify Email | NewSync",
   description: "Verify your email address to activate your account",
 };
 
