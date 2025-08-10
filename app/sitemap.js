@@ -4,6 +4,7 @@ export default async function sitemap() {
   const baseUrl = "https://newsync.site";
   const now = new Date();
 
+  // ✅ Public categories
   const categories = [
     "Tech",
     "Startups",
@@ -53,7 +54,6 @@ export default async function sitemap() {
     "Nonprofits",
   ];
 
-  // 1️⃣ Static pages
   const pages = [
     {
       url: `${baseUrl}/`,
@@ -61,57 +61,8 @@ export default async function sitemap() {
       changeFrequency: "daily",
       priority: 1.0,
     },
-    {
-      url: `${baseUrl}/profile`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/profile/update`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/auth/login`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/auth/register`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/auth/forgot-password`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/auth/reset-password`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/post`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/category`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
   ];
 
-  // 2️⃣ Add category pages
   categories.forEach((cat) => {
     const slug = cat.toLowerCase().replace(/ & /g, "-").replace(/\s+/g, "-");
     pages.push({
@@ -122,7 +73,6 @@ export default async function sitemap() {
     });
   });
 
-  // 3️⃣ Add individual post pages
   const posts = await getPostSlugs();
   posts.forEach((post) => {
     pages.push({
