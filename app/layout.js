@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://newsync.site"),
   title: "NewSync - Your News, Your Way",
   description: "Stay updated with the latest news tailored for you.",
   icons: {

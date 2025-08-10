@@ -4,7 +4,7 @@ import CustomPagination from "@/components/CustomPagination";
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import { Suspense } from "react";
 import NativeBannerAd from "@/components/ads/NativeBanner";
-
+import AdsterraSmallBanner from "@/components/ads/AdsterraSmallBanner";
 export async function generateMetadata(props) {
   const searchParams = await props.searchParams;
   const query = searchParams?.search ?? "";
