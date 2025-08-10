@@ -8,48 +8,6 @@ import HeroSkeleton from "@/skeletons/HeroSkeleton";
 import Script from "next/script";
 import { Suspense } from "react";
 
-// ✅ SEO Metadata for HomePage
-export async function generateMetadata() {
-  const siteUrl = process.env.SITE_URL || "https://newsync.site";
-  const title = "Newsync - Latest Business, Sports, Health & Tech News";
-  const description =
-    "Stay updated with the latest news from Business, Sports, Health, Technology, and more on NewsSync. Real-time stories curated just for you.";
-  const ogImage = `${siteUrl}/newsync.png`;
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      url: siteUrl,
-      siteName: "NewsSync",
-      type: "website",
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: "NewsSync - Latest News",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [ogImage],
-    },
-    alternates: {
-      canonical: siteUrl,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
-}
-
 export default async function HomePage() {
   const heroCategories = "Business,Entertainment,Health,Innovation";
   const sportCategories = "Sports";
