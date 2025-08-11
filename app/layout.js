@@ -56,6 +56,18 @@ export default async function RootLayout({ children }) {
             },
           })}
         </Script>
+         <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-E5FR591D3R"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-E5FR591D3R');
+          `}
+        </Script>
       </head>
       <body className="font-sans bg-white text-black">
         <ReactQueryProvider>
