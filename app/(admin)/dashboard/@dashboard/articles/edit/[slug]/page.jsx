@@ -20,7 +20,6 @@ export default async function EditArticlePage({ params }) {
     };
 
     return await updateArticleAction({ slug, updatedData });
-    redirect("/dashboard/articles");
   };
 
   return <EditArticleForm article={article} action={editArticle} />;

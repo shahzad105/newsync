@@ -16,7 +16,7 @@ const createPost = async (prevState, formData) => {
   const image = formData.get("image");
 
   const result = await createArticle({ title, description, category, image });
-  redirect("/dashboard/articles");
+
   return result;
 };
 export default function AddArticlePage() {
