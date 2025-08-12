@@ -34,19 +34,18 @@ export default async function Hero({ articles }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="py-9">
+      <div className="md:py-9 py-3">
         <div className="flex flex-col md:flex-row gap-5">
           {/* Left - Main Featured Post */}
           {firstPost && (
             <Link
               href={`/post/${firstPost.slug}`}
-              className="flex-1 relative group overflow-hidden rounded-xl shadow-lg"
+              className=" relative group overflow-hidden rounded-xl shadow-lg md:w-1/2 h-[290px] md:h-[429px] bg-gray-100"
             >
               <Image
                 src={firstPost.image?.url || "/newsync.png"}
                 alt={firstPost.title}
-                width={600}
-                height={350}
+                fill
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 priority
               />
@@ -66,7 +65,7 @@ export default async function Hero({ articles }) {
           )}
 
           {/* Right - 4 Small Thumbnails */}
-          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4">
+          <div className="md:w-1/2 w-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4">
             {smallPosts.map((post) => (
               <Link
                 href={`/post/${post.slug}`}
