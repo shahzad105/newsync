@@ -32,7 +32,7 @@ export async function GET(req) {
       .sort(sortOption)
       .limit(limit)
       .skip(skip)
-      .populate("postedBy", "username"); // ✅ needs User model to be registered
+      .populate("postedBy", "username");
     const totalArticles = await Article.countDocuments(query);
     const totalPages = Math.ceil(totalArticles / limit);
 

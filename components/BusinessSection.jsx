@@ -13,9 +13,10 @@ const BusinessSection = () => {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isError, isFetching } = useGetArticles({
-    category: "Business",
+    category: "International",
     limit: 3,
     page,
+    latest: true,
   });
 
   const articles = data?.articles || [];
@@ -32,7 +33,7 @@ const BusinessSection = () => {
   return (
     <div className="py-8 relative">
       <h2 className="text-2xl mb-6 p-1 font-semibold text-green-700 whitespace-nowrap underline underline-offset-10 decoration-red-600 decoration-4">
-        Business
+        International
       </h2>
 
       {/* Article List */}

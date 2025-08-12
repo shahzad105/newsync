@@ -12,7 +12,7 @@ const useGetArticles = ({
     queryKey: ["articles", category, page, limit, search, latest],
     queryFn: async () => {
       const { data } = await axios.get("/api/articles", {
-        params: { category, page, limit, search },
+        params: { category, page, limit, search, latest },
       });
       return data;
     },
