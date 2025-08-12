@@ -31,14 +31,6 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <head>
-        {/* Ads Script */}
-        <Script
-          type="text/javascript"
-          src="//pl27379521.profitableratecpm.com/e9/ef/24/e9ef24bf836fc742f68cedbc9349f44d.js"
-          strategy="afterInteractive"
-        />
-
-        {/* SEO Structured Data Script */}
         <Script
           id="structured-data"
           type="application/ld+json"
@@ -49,6 +41,7 @@ export default async function RootLayout({ children }) {
             "@type": "WebSite",
             name: "NewSync",
             url: "https://newsync.site/",
+            image: "https://newsync.site/favicon.ico",
             potentialAction: {
               "@type": "SearchAction",
               target: "https://newsync.site/posts?search={search_term_string}",
@@ -56,7 +49,9 @@ export default async function RootLayout({ children }) {
             },
           })}
         </Script>
-         <Script
+
+        {/* Google Analytics */}
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-E5FR591D3R"
           strategy="afterInteractive"
         />
@@ -69,17 +64,18 @@ export default async function RootLayout({ children }) {
           `}
         </Script>
       </head>
+
       <body className="font-sans bg-white text-black">
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>
           <Toaster position="top-right" />
         </ReactQueryProvider>
 
-        {/* Footer Ads Script */}
+        {/* Social Bar Script (loads after page is ready) */}
         <Script
           type="text/javascript"
-          src="//pl27379521.profitableratecpm.com/e9/ef/24/e9ef24bf836fc742f68cedbc9349f44d.js"
-          strategy="afterInteractive"
+          src="//pl27379678.profitableratecpm.com/e3/c3/e0/e3c3e0b7ef0a36f8a5424c73baf5964b.js"
+          strategy="lazyOnload"
         />
       </body>
     </html>

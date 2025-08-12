@@ -1,23 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import Image from "next/image";
-import toast from "react-hot-toast";
-import { updateUser } from "@/lib/actions/updateUser";
+import { useFormState } from "react-dom";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import SubmitButton from "./SubmitButton";
 
-export default function UpdateProfileComponent({ user }) {
-  const { data: session, update } = useSession();
-  const router = useRouter();
+export default function UpdateProfileComponent({ user, action }) {
+  const [state, formAction] = useActionState(action, {
+    success: null,
+    message: "",
+  });
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     confirmPassword: "",
     image: "",
   });
+
   const [previewImage, setPreviewImage] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -27,10 +29,11 @@ export default function UpdateProfileComponent({ user }) {
         confirmPassword: "",
         image: user.avatar?.url || "",
       });
-      setPreviewImage(user.avatar?.url || "");
+      setPreviewImage(user.avatar?.url || "/user.png");
     }
   }, [user]);
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "image" && files?.[0]) {
@@ -46,52 +49,22 @@ export default function UpdateProfileComponent({ user }) {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.username.trim()) {
-      toast.error("Username cannot be empty");
-      return;
+  const handleSubmit = (formDataObj) => {
+    formDataObj.delete("image");
+    if (formData.image) {
+      formDataObj.set("image", formData.image);
     }
-    if (formData.password && formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const result = await updateUser(formData);
-      if (result?.success) {
-        toast.success("Profile updated successfully");
-
-        setFormData((prev) => ({
-          ...prev,
-          password: "",
-          confirmPassword: "",
-        }));
-
-        // Update session locally with new profile data
-        await update({
-          username: result.user.username,
-          avatar: result.user.avatar,
-        });
-        router.refresh();
-      } else {
-        toast.error(result?.message || "Update failed");
-      }
-    } catch {
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    formAction(formDataObj);
   };
-
+  console.log("rendering");
   return (
     <div className="min-h-screen px-4 sm:px-8 py-10">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-semibold text-gray-800 mb-8">
           Account Settings
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-8">
+
+        <form action={handleSubmit} className="space-y-8">
           {/* Avatar Upload */}
           <div className="flex items-center gap-6">
             <label className="relative cursor-pointer group">
@@ -112,7 +85,6 @@ export default function UpdateProfileComponent({ user }) {
                 className="hidden"
               />
               <span className="absolute bottom-0 right-0 bg-blue-600 text-white w-6 h-6 flex items-center justify-center rounded-full">
-                {/* SVG Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -182,16 +154,16 @@ export default function UpdateProfileComponent({ user }) {
             </div>
           </div>
 
-          {/* Submit Button */}
-          <div className="pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-600 text-white text-sm px-6 py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+          <SubmitButton loading="Updating..." title="Update" />
+          {state.message && (
+            <p
+              className={`mt-2 ${
+                state.success ? "text-green-600" : "text-red-600"
+              }`}
             >
-              {loading ? "Saving..." : "Save Changes"}
-            </button>
-          </div>
+              {state.message}
+            </p>
+          )}
         </form>
       </div>
     </div>

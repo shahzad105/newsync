@@ -12,6 +12,8 @@ class CustomAuthError extends AuthError {
   }
 }
 
+const isProd = process.env.NODE_ENV === "production";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -48,14 +50,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+
   secret: process.env.AUTH_SECRET,
+
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+
   jwt: {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
@@ -89,20 +95,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
+
   cookies: {
     sessionToken: {
-      name:
-        process.env.NODE_ENV === "production"
-          ? "__Secure-next-auth.session-token"
-          : "next-auth.session-token",
+      name: isProd
+        ? "__Secure-next-auth.session-token"
+        : "next-auth.session-token",
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production", // ✅ secure only in prod
+        secure: isProd,
       },
     },
   },
+
   pages: {
     signIn: "/auth/login",
     error: "/auth/login",
