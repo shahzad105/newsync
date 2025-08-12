@@ -22,23 +22,20 @@ export default function SearchCategory({ filters = [] }) {
     const value = e.target.value;
     setSelectedCategory(value);
 
-    // Preserve existing search query
-    const search = searchParams.get("search") || "";
-    router.push(
-      `/posts?search=${encodeURIComponent(
-        search
-      )}&category=${encodeURIComponent(value)}`
-    );
+    // Preserve existing params
+    const params = new URLSearchParams(searchParams);
+    params.set("category", value);
+    params.set("page", "1"); // reset page when category changes
+    router.push(`?${params.toString()}`);
   };
 
-  // ✅ Agar search hai aur category nahi hai, to default "All" auto-set karo
   useEffect(() => {
-    const search = searchParams.get("search") || "";
     const category = searchParams.get("category");
-
-    if (search && !category) {
+    if (!category) {
       setSelectedCategory("All");
-      router.push(`/posts?search=${encodeURIComponent(search)}&category=All`);
+      const params = new URLSearchParams(searchParams);
+      params.set("category", "All");
+      router.replace(`?${params.toString()}`);
     }
   }, [searchParams, router]);
 

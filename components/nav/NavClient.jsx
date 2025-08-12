@@ -35,8 +35,9 @@ const NavClient = ({ user }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (query.trim()) {
-      router.push(`/posts?search=${encodeURIComponent(query.trim())}`);
+    const trimmed = query.trim();
+    if (trimmed) {
+      router.push(`/search/${encodeURIComponent(trimmed)}`);
       setShowSearch(false);
       setQuery("");
     }

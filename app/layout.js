@@ -44,7 +44,7 @@ export default async function RootLayout({ children }) {
             image: "https://newsync.site/favicon.ico",
             potentialAction: {
               "@type": "SearchAction",
-              target: "https://newsync.site/posts?search={search_term_string}",
+              target: "https://newsync.site/search/{search_term_string}",
               "query-input": "required name=search_term_string",
             },
           })}
@@ -65,7 +65,7 @@ export default async function RootLayout({ children }) {
         </Script>
       </head>
 
-      <body className="font-sans bg-white text-black">
+      <body className="bg-white text-black" suppressHydrationWarning={true}>
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>
           <Toaster position="top-right" />
