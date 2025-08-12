@@ -1,6 +1,7 @@
 import EditArticleForm from "@/components/EditArticleForm";
 import { getArticle } from "@/lib/actions/getArticle";
 import { updateArticleAction } from "@/lib/actions/updateArticle";
+import { redirect } from "next/navigation";
 
 export default async function EditArticlePage({ params }) {
   const { slug } = params;
@@ -19,6 +20,7 @@ export default async function EditArticlePage({ params }) {
     };
 
     return await updateArticleAction({ slug, updatedData });
+    redirect("/dashboard/articles");
   };
 
   return <EditArticleForm article={article} action={editArticle} />;

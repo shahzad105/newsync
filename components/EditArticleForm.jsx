@@ -116,6 +116,7 @@ export default function EditArticleForm({ action, article }) {
         <input
           type="file"
           accept="image/png"
+          name="image"
           onChange={handleFileChange}
           ref={fileInputRef}
           className="hidden"

@@ -1,5 +1,6 @@
 import AddArticleForm from "@/components/AddArticle";
 import { createArticle } from "@/lib/actions/createArticle";
+import { redirect } from "next/dist/server/api-utils";
 
 export function generateMetadata() {
   return {
@@ -15,6 +16,7 @@ const createPost = async (prevState, formData) => {
   const image = formData.get("image");
 
   const result = await createArticle({ title, description, category, image });
+  redirect("/dashboard/articles");
   return result;
 };
 export default function AddArticlePage() {
