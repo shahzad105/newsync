@@ -72,7 +72,7 @@ export default async function CategoryPage({ params, searchParams }) {
 
   // Fetch articles for this category
   const res = await fetch(
-    `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}latest=true`,
+    `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
     { cache: "no-store" }
   );
   const data = await res.json();
