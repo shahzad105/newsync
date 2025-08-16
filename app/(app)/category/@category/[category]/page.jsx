@@ -16,7 +16,7 @@ export async function generateMetadata({ params, searchParams }) {
   const pageNum = parseInt(searchParams.page) || 1;
 
   const res = await fetch(
-    `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}`,
+    `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}&latest=true`,
     { cache: "no-store" }
   );
   const data = await res.json();
