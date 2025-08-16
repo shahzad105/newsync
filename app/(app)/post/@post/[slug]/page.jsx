@@ -144,9 +144,10 @@ export default async function PostPage({ params }) {
               </div>
 
               {/* Content */}
-              <div className="text-gray-800 leading-7 whitespace-pre-line font-serif">
-                {post.description}
-              </div>
+              <div
+                className="text-gray-800 leading-7 whitespace-pre-line"
+                dangerouslySetInnerHTML={{ __html: post.description }}
+              ></div>
             </>
           ) : (
             <p className="text-red-500 text-center mt-6">Post not found</p>

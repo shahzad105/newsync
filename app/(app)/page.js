@@ -9,7 +9,7 @@ import Script from "next/script";
 import { Suspense } from "react";
 
 export default async function HomePage() {
-  const heroCategories = "Business,Entertainment,Health,Innovation";
+  const heroCategories = "Business,International,Health,Innovation";
   const sportCategories = "Sports";
 
   // ✅ Fetch all articles in parallel

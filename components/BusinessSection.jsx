@@ -14,7 +14,7 @@ const BusinessSection = () => {
 
   const { data, isLoading, isError, isFetching } = useGetArticles({
     category: "International",
-    limit: 3,
+    limit: 5,
     page,
     latest: true,
   });
@@ -73,7 +73,7 @@ const BusinessSection = () => {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-base  md:text-xl font-medium md:font-semibold line-clamp-3 hover:underline md:w-[45%]">
+                      <h3 className="text-base  md:text-xl font-medium md:font-semibold line-clamp-3 hover:underline md:w-[60%]">
                         {post.title}
                       </h3>
                       <p className="text-xs text-slate-500 mt-1">

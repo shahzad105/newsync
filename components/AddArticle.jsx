@@ -1,8 +1,43 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-
+import dynamic from "next/dynamic";
 import SubmitButton from "./SubmitButton";
+import "react-quill-new/dist/quill.snow.css";
+
+// Dynamically import ReactQuill (fixes Next.js SSR issues)
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+
+// Quill toolbar
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["blockquote", "code-block"],
+    ["link", "image", "video"],
+    [{ align: [] }, { color: [] }, { background: [] }],
+    ["clean"],
+  ],
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "list",
+  "bullet",
+  "blockquote",
+  "code-block",
+  "link",
+  "image",
+  "video",
+  "align",
+  "color",
+  "background",
+];
 
 export default function AddArticleForm({ action }) {
   const [state, formAction] = useActionState(action, {
@@ -13,6 +48,7 @@ export default function AddArticleForm({ action }) {
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState("");
   const [imageBase64, setImageBase64] = useState("");
+  const [body, setBody] = useState("");
 
   const handleFile = (file) => {
     if (!file) return;
@@ -36,6 +72,7 @@ export default function AddArticleForm({ action }) {
   };
 
   const handleDragOver = (e) => e.preventDefault();
+
   const categories = [
     "Tech",
     "Startups",
@@ -86,13 +123,14 @@ export default function AddArticleForm({ action }) {
     "Space",
     "Astronomy",
   ];
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-8">
       {/* SUCCESS / ERROR MESSAGE */}
-
       <form
         action={(formData) => {
           formData.set("image", imageBase64);
+          formData.set("description", body); // ✅ send quill content instead of textarea
           formAction(formData);
         }}
         className="space-y-8"
@@ -156,15 +194,16 @@ export default function AddArticleForm({ action }) {
           </select>
         </div>
 
-        {/* Body */}
         <div>
           <label className="block mb-1 font-medium">Article Body</label>
-          <textarea
-            name="description"
-            rows={8}
+          <ReactQuill
+            theme="snow"
+            value={body}
+            onChange={setBody}
+            modules={modules}
+            formats={formats}
+            className="w-full  rounded bg-white custom-editor"
             placeholder="Write your article..."
-            className="w-full border p-2 rounded resize-none focus:ring-1 focus:ring-blue-500"
-            required
           />
         </div>
 
@@ -172,8 +211,10 @@ export default function AddArticleForm({ action }) {
         <SubmitButton loading={"Publishing.."} title={"Publish Article"} />
         {state.message && (
           <div
-            className={`mt-2 rounded ${
-              state.success ? "bg-green-100 text-green-700" : " text-red-700"
+            className={`p-3 mt-4 rounded-lg text-sm ${
+              state.success
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : "bg-red-100 text-red-700 border border-red-300"
             }`}
           >
             {state.message}

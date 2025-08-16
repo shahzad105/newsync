@@ -1,17 +1,24 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
-import { useFormState } from "react-dom";
+import dynamic from "next/dynamic";
 import SubmitButton from "./SubmitButton";
+
+// Dynamically import ReactQuill to prevent SSR issues
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
 
 export default function EditArticleForm({ action, article }) {
   const [state, formAction] = useActionState(action, {
     success: null,
     message: "",
   });
+
   const fileInputRef = useRef(null);
   const [preview, setPreview] = useState(article.image?.url || "");
   const [imageBase64, setImageBase64] = useState("");
+  const [body, setBody] = useState(article.description || "");
+
   const handleFile = (file) => {
     if (!file) return;
     const reader = new FileReader();
@@ -21,16 +28,20 @@ export default function EditArticleForm({ action, article }) {
     };
     reader.readAsDataURL(file);
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) handleFile(file);
   };
+
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
   };
+
   const handleDragOver = (e) => e.preventDefault();
+
   const categories = [
     "Tech",
     "Startups",
@@ -81,6 +92,7 @@ export default function EditArticleForm({ action, article }) {
     "Space",
     "Astronomy",
   ];
+
   return (
     <form
       action={(formData) => {
@@ -90,27 +102,32 @@ export default function EditArticleForm({ action, article }) {
         } else {
           formData.set("image", article.image?.url || "");
         }
+        formData.set("description", body); // send rich text body
         formAction(formData);
       }}
-      className="max-w-4xl mx-auto p-4 space-y-8"
+      className="max-w-4xl mx-auto p-6 space-y-8  rounded-xl shadow-md"
     >
       {/* Image upload */}
       <div>
-        <label className="block mb-1 font-medium">Feature Image (PNG)</label>
+        <label className="block mb-2 font-semibold text-gray-800">
+          Feature Image (PNG)
+        </label>
         <div
           onClick={() => fileInputRef.current?.click()}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          className="h-56 border-dashed border bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100"
+          className="h-56 border-2 border-dashed rounded-xl bg-gray-50 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition"
         >
           {preview ? (
             <img
               src={preview}
               alt="Preview"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-xl"
             />
           ) : (
-            <span className="text-gray-400">Click or drop PNG image here</span>
+            <span className="text-gray-400">
+              Click or drag & drop PNG image here
+            </span>
           )}
         </div>
         <input
@@ -125,24 +142,26 @@ export default function EditArticleForm({ action, article }) {
 
       {/* Title */}
       <div>
-        <label className="block mb-1 font-medium">Title</label>
+        <label className="block mb-2 font-semibold text-gray-800">Title</label>
         <input
           name="title"
           type="text"
           defaultValue={article.title}
           placeholder="Enter article title"
-          className="w-full border-b py-1 focus:outline-none"
+          className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           required
         />
       </div>
 
       {/* Category */}
       <div>
-        <label className="block mb-1 font-medium">Category</label>
+        <label className="block mb-2 font-semibold text-gray-800">
+          Category
+        </label>
         <select
           name="category"
           defaultValue={article.category}
-          className="w-full py-2 border rounded focus:ring-1 focus:ring-blue-500"
+          className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           required
         >
           {categories.map((category) => (
@@ -153,28 +172,29 @@ export default function EditArticleForm({ action, article }) {
         </select>
       </div>
 
-      {/* Body */}
+      {/* Body (Quill Editor) */}
       <div>
-        <label className="block mb-1 font-medium">Article Body</label>
-        <textarea
-          name="description"
-          rows={8}
-          defaultValue={article.description}
-          placeholder="Write your article..."
-          className="w-full border p-2 rounded resize-none focus:ring-1 focus:ring-blue-500"
-          required
+        <label className="block mb-2 font-semibold text-gray-800">
+          Article Body
+        </label>
+        <ReactQuill
+          theme="snow"
+          value={body}
+          onChange={setBody}
+          className="custom-editor rounded-lg border min-h-[250px]"
         />
       </div>
 
       {/* Submit */}
       <SubmitButton loading="Updating..." title="Update Article" />
-      {/* Feedback message */}
+
+      {/* Feedback */}
       {state.message && (
         <div
-          className={`pt-2S rounded text-sm ${
+          className={`p-3 mt-4 rounded-lg text-sm ${
             state.success
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
+              ? "bg-green-100 text-green-700 border border-green-300"
+              : "bg-red-100 text-red-700 border border-red-300"
           }`}
         >
           {state.message}

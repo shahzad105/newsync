@@ -66,3 +66,7 @@
     animation: slideIn 0.3s ease-out both;
   }
 }
+.custom-editor .ql-editor {
+  min-height: 200px;
+  height: auto;
+}
