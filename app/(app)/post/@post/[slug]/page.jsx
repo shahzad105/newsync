@@ -4,17 +4,31 @@ import Script from "next/script";
 import PostPageSkeleton from "@/skeletons/PostLoadingSkeleton";
 import NativeBannerAd from "@/components/ads/NativeBanner";
 
+// ✅ Fetch article
 async function getArticle(slug) {
-  const res = await fetch(`${process.env.SITE_URL}/api/article/${slug}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetch(`${process.env.SITE_URL}/api/article/${slug}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (err) {
+    console.error("Article fetch error:", err);
+    return null;
+  }
+}
+
+// ✅ Helper to clean description (strip HTML + limit length)
+function getPlainText(htmlString = "", maxLength = 160) {
+  const text = htmlString.replace(/<[^>]+>/g, ""); // remove tags
+  return text.length > maxLength
+    ? text.slice(0, maxLength).trim() + "..."
+    : text.trim();
 }
 
 // ✅ Dynamic Metadata for SEO
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const data = await getArticle(slug);
   const post = data?.article;
 
@@ -27,8 +41,7 @@ export async function generateMetadata({ params }) {
   }
 
   const title = `${post.title} | NewSync`;
-  const description =
-    post.description?.slice(0, 150) || "Read the latest article on NewSync.";
+  const description = getPlainText(post.description, 160);
   const url = `${process.env.SITE_URL}/post/${slug}`;
   const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
@@ -54,8 +67,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
+// ✅ Page Component
 export default async function PostPage({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const data = await getArticle(slug);
   const post = data?.article;
 
@@ -65,9 +79,7 @@ export default async function PostPage({ params }) {
         "@context": "https://schema.org",
         "@type": "Article",
         headline: post.title,
-        description:
-          post.description?.slice(0, 150) ||
-          "Read the latest article on NewSync.",
+        description: getPlainText(post.description, 160),
         image: [post.image?.url || `${process.env.SITE_URL}/newsync.png`],
         author: {
           "@type": "Person",
@@ -147,13 +159,14 @@ export default async function PostPage({ params }) {
               <div
                 className="text-gray-800 leading-7 whitespace-pre-line"
                 dangerouslySetInnerHTML={{ __html: post.description }}
-              ></div>
+              />
             </>
           ) : (
             <p className="text-red-500 text-center mt-6">Post not found</p>
           )}
         </Suspense>
       </div>
+
       <NativeBannerAd />
     </>
   );
