@@ -1,6 +1,5 @@
 import AddArticleForm from "@/components/AddArticle";
 import { createArticle } from "@/lib/actions/createArticle";
-import { redirect } from "next/dist/server/api-utils";
 
 export function generateMetadata() {
   return {

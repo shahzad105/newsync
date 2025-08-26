@@ -23,7 +23,6 @@ const articleSchema = new mongoose.Schema(
         "Entertainment",
         "Education",
         "Politics",
-        "Policy",
         "Economy",
         "Health",
         "Lifestyle",
@@ -59,6 +58,9 @@ const articleSchema = new mongoose.Schema(
         "Content Creation",
         "Startups & Entrepreneurship",
         "Nonprofits",
+        "Defence",
+        "Space",
+        "Astronomy",
       ],
     },
     description: {
