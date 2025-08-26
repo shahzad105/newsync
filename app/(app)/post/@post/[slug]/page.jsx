@@ -42,6 +42,7 @@ export async function generateMetadata({ params }) {
 
   const title = `${post.title} | NewSync`;
   const description = getPlainText(post.description, 160);
+  console.log(description);
   const url = `${process.env.SITE_URL}/post/${slug}`;
   const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
@@ -61,6 +62,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       images: [image],
+      creator: "@NewSync",
     },
     alternates: { canonical: url },
     robots: { index: true, follow: true },
