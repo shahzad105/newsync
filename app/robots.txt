@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /*?search=
-Disallow: /&
-Disallow: /$
-Allow: /
-
-Sitemap: https://newsync.site/sitemap.xml

@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 import { Toaster } from "react-hot-toast";
-import { auth } from "@/auth"; // your auth export from auth.ts
+import { auth } from "@/auth";
 import SessionWrapper from "@/components/SessionWrapper";
 import Script from "next/script";
 
@@ -31,6 +31,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
       <head>
+        {/* ✅ JSON-LD structured data */}
         <Script
           id="structured-data"
           type="application/ld+json"
@@ -50,7 +51,7 @@ export default async function RootLayout({ children }) {
           })}
         </Script>
 
-        {/* Google Analytics */}
+        {/* ✅ Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-E5FR591D3R"
           strategy="afterInteractive"
@@ -63,11 +64,13 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-E5FR591D3R');
           `}
         </Script>
+
+        {/* ✅ Ad Script */}
         <Script
           type="text/javascript"
           src="//pl27379521.profitableratecpm.com/e9/ef/24/e9ef24bf836fc742f68cedbc9349f44d.js"
           strategy="afterInteractive"
-        ></Script>
+        />
       </head>
 
       <body className="bg-white text-black" suppressHydrationWarning={true}>
@@ -76,8 +79,8 @@ export default async function RootLayout({ children }) {
           <Toaster position="top-right" />
         </ReactQueryProvider>
 
+        {/* ✅ Another Ad Script */}
         <Script
-          script
           type="text/javascript"
           src="//pl27379678.profitableratecpm.com/e3/c3/e0/e3c3e0b7ef0a36f8a5424c73baf5964b.js"
           strategy="lazyOnload"
