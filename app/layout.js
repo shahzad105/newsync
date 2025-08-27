@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://newsync.site"),
+  metadataBase: new URL("https://www.newsync.site"),
   title: "NewSync - Your News, Your Way",
   description: "Stay updated with the latest news tailored for you.",
   openGraph: {
     title: "NewSync - Your News, Your Way",
     description: "Stay updated with the latest news tailored for you.",
-    url: "https://newsync.site",
+    url: "https://www.newsync.site",
     siteName: "NewSync",
     type: "website",
   },
@@ -41,11 +41,11 @@ export default async function RootLayout({ children }) {
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "NewSync",
-            url: "https://newsync.site/",
-            image: "https://newsync.site/favicon.ico",
+            url: "https://www.newsync.site/",
+            image: "https://www.newsync.site/favicon.ico",
             potentialAction: {
               "@type": "SearchAction",
-              target: "https://newsync.site/search/{search_term_string}",
+              target: "https://www.newsync.site/search/{search_term_string}",
               "query-input": "required name=search_term_string",
             },
           })}

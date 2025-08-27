@@ -11,7 +11,7 @@ export const metadata = {
   openGraph: {
     title: "Profile - NewSync",
     description: "View and manage your profile details",
-    url: "https://newsync.site/profile",
+    url: "https://www.newsyn.site/profile",
     siteName: "NewSync",
     images: [
       {

@@ -56,7 +56,7 @@ export default function UpdateProfileComponent({ user, action }) {
     }
     formAction(formDataObj);
   };
-  console.log("rendering");
+
   return (
     <div className="min-h-screen px-4 sm:px-8 py-10">
       <div className="max-w-4xl mx-auto">

@@ -1,10 +1,9 @@
 import { getPostSlugs } from "@/lib/actions/getSlugs";
 
 export default async function sitemap() {
-  const baseUrl = "https://newsync.site";
+  const baseUrl = "https://www.newsyn.site";
   const now = new Date();
 
-  // ✅ Public categories
   const categories = [
     "Tech",
     "Startups",

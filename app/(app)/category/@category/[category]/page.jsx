@@ -92,11 +92,11 @@ export default async function CategoryPage({ params, searchParams }) {
           "@type": "CollectionPage",
           name: `${formattedCategory} News - NewSync`,
           description: `Latest ${formattedCategory} news and updates from NewSync.`,
-          url: `https://newsync.site/category/${categoryParam}`,
+          url: `https://www.newsyn.site/category/${categoryParam}`,
           isPartOf: {
             "@type": "WebSite",
             name: "NewSync",
-            url: "https://newsync.site",
+            url: "https://www.newsyn.site",
           },
         })}
       </Script>

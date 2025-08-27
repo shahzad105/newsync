@@ -11,7 +11,7 @@ export const metadata = {
     title: "Update Profile",
     description:
       "Manage and update your profile details including username, email, and avatar.",
-    url: "https://newsync.site/profile/update",
+    url: "https://www.newsyn.site/profile/update",
     siteName: "Newsync",
     images: [
       {
