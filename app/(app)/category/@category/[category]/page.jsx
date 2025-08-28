@@ -6,14 +6,16 @@ import Link from "next/link";
 import Script from "next/script";
 import React, { Suspense } from "react";
 
-// ✅ Metadata generation for SEO
+//  generateMetadata with awaited params + searchParams
 export async function generateMetadata({ params, searchParams }) {
-  const categoryParam = params.category || "";
-  const formattedCategory =
-    categoryParam.charAt(0).toUpperCase() +
-    categoryParam.slice(1).toLowerCase();
+  const { category: categoryParam = "" } = await params;
+  const { page: pageQuery } = await searchParams;
+  const pageNum = parseInt(pageQuery) || 1;
 
-  const pageNum = parseInt(searchParams.page) || 1;
+  const formattedCategory = categoryParam
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
 
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}&latest=true`,
@@ -24,7 +26,7 @@ export async function generateMetadata({ params, searchParams }) {
     data?.articles?.[0]?.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
   const title = `${formattedCategory} News - Page ${pageNum} | NewSync`;
-  const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum} of curated articles.`;
+  const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum}.`;
   const pageUrl = `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`;
 
   return {
@@ -53,24 +55,28 @@ export async function generateMetadata({ params, searchParams }) {
     },
     alternates: {
       canonical: pageUrl,
+      prev:
+        pageNum > 1 &&
+        `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum - 1}`,
+      next:
+        data?.totalPages > pageNum &&
+        `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum + 1}`,
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: { index: true, follow: true },
   };
 }
 
-// ✅ Main Category Page
+//  CategoryPage component with awaited params + searchParams
 export default async function CategoryPage({ params, searchParams }) {
-  const categoryParam = params.category || "";
-  const formattedCategory =
-    categoryParam.charAt(0).toUpperCase() +
-    categoryParam.slice(1).toLowerCase();
+  const { category: categoryParam = "" } = await params;
+  const { page: pageQuery } = await searchParams;
+  const pageNum = parseInt(pageQuery) || 1;
 
-  const pageNum = parseInt(searchParams.page) || 1;
+  const formattedCategory = categoryParam
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
 
-  // Fetch articles for this category
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
     { cache: "no-store" }
@@ -81,7 +87,6 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <>
-      {/* ✅ Structured Data for Google */}
       <Script
         id="category-structured-data"
         type="application/ld+json"
@@ -92,11 +97,36 @@ export default async function CategoryPage({ params, searchParams }) {
           "@type": "CollectionPage",
           name: `${formattedCategory} News - NewSync`,
           description: `Latest ${formattedCategory} news and updates from NewSync.`,
-          url: `https://www.newsyn.site/category/${categoryParam}`,
+          url: `${process.env.SITE_URL}/category/${categoryParam}`,
           isPartOf: {
             "@type": "WebSite",
             name: "NewSync",
-            url: "https://www.newsyn.site",
+            url: process.env.SITE_URL,
+          },
+          breadcrumb: {
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: process.env.SITE_URL,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: formattedCategory,
+                item: `${process.env.SITE_URL}/category/${categoryParam}`,
+              },
+            ],
+          },
+          mainEntity: {
+            "@type": "ItemList",
+            itemListElement: articles.map((article, idx) => ({
+              "@type": "ListItem",
+              position: idx + 1,
+              url: `${process.env.SITE_URL}/post/${article.slug}`,
+            })),
           },
         })}
       </Script>
@@ -113,19 +143,19 @@ export default async function CategoryPage({ params, searchParams }) {
           </span>
         </nav>
 
-        {/* Page Heading */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-blue-900 capitalize pl-2 md:pl-0">
+        {/* Title */}
+        <h1 className="text-3xl sm:text-4xl font-bold text-blue-900 pl-2 md:pl-0">
           {formattedCategory} News
         </h1>
 
-        {/* Categories Filter */}
+        {/* Filters */}
         <div className="flex flex-wrap gap-3 pl-2 md:pl-0">
-          {["Business", "Entertainment", "Sports", "Technology", "Travel"].map(
+          {["Business", "Entertainment", "Sports", "Tech", "Travel"].map(
             (tag) => (
               <Link
                 key={tag}
                 href={`/category/${tag.toLowerCase()}?page=1`}
-                className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full cursor-pointer hover:bg-blue-600 transition"
+                className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600 transition"
               >
                 {tag}
               </Link>
@@ -133,13 +163,13 @@ export default async function CategoryPage({ params, searchParams }) {
           )}
         </div>
 
-        {/* News Section */}
+        {/* News */}
         <section>
           <Suspense fallback={<NewsSkeleton />}>
-            {articles.length > 0 ? (
+            {articles.length ? (
               <News post={articles} />
             ) : (
-              <p>No articles found for this category.</p>
+              <p>No articles found.</p>
             )}
           </Suspense>
         </section>
