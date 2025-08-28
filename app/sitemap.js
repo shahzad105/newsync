@@ -57,7 +57,7 @@ export default async function sitemap() {
     {
       url: `${baseUrl}/`,
       lastModified: now,
-      changeFrequency: "daily",
+      changeFrequency: "hourly", // ✅ changed for news freshness
       priority: 1.0,
     },
   ];
@@ -67,7 +67,7 @@ export default async function sitemap() {
     pages.push({
       url: `${baseUrl}/category/${slug}`,
       lastModified: now,
-      changeFrequency: "weekly",
+      changeFrequency: "daily", // ✅ categories update often
       priority: 0.8,
     });
   });
@@ -77,8 +77,8 @@ export default async function sitemap() {
     pages.push({
       url: `${baseUrl}/post/${post.slug}`,
       lastModified: new Date(post.updatedAt || now),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      changeFrequency: "never", // ✅ news articles usually don’t change after publish
+      priority: 0.7, // ✅ slightly lower than categories
     });
   });
 
