@@ -1,7 +1,7 @@
 import { getPostSlugs } from "@/lib/actions/getSlugs";
 
 export default async function sitemap() {
-  const baseUrl = "https://www.newsyn.site";
+  const baseUrl = "https://www.newsync.site";
   const now = new Date();
 
   const categories = [

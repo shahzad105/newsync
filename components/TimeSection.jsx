@@ -46,9 +46,12 @@ export default async function TimeBanner() {
           <a href="#" className="hover:text-blue-700 transition">
             <FaLinkedinIn size={16} />
           </a>
-          <a href="#" className="hover:text-sky-500 transition">
+          <Link
+            href="https://x.com/newsync09"
+            className="hover:text-sky-500 transition"
+          >
             <FaTwitter size={16} />
-          </a>
+          </Link>
           <a href="#" className="hover:text-red-500 transition">
             <FaYoutube size={16} />
           </a>
