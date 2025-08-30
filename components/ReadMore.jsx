@@ -15,6 +15,8 @@ const ReadMore = () => {
   const { data, isLoading, isError, isFetching } = useGetArticles({
     limit: 5,
     page,
+    category:
+      "Politics,Economy,Health,Lifestyle,Science,AI & Machine Learning,Cybersecurity,Freelancing",
   });
 
   const articles = data?.articles || [];
