@@ -4,12 +4,7 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-        allow: ["/"],
-        disallow: ["/?search=", "/*?search=", "/*&"],
-      },
-      {
-        userAgent: "Twitterbot",
-        allow: ["/"], // explicitly allow Twitterbot
+        allow: "/",
       },
     ],
     sitemap: "https://www.newsync.site/sitemap.xml",
