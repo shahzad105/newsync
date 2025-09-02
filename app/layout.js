@@ -70,6 +70,10 @@ export default async function RootLayout({ children }) {
           crossorigin="anonymous"
           strategy="afterInteractive"
         />
+        <meta
+          name="google-adsense-account"
+          content="ca-pub-7195029136262194"
+        ></meta>
       </head>
 
       <body className="bg-white text-black" suppressHydrationWarning={true}>
