@@ -4,8 +4,7 @@ import News from "@/components/News";
 import CustomPagination from "@/components/CustomPagination";
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import { Suspense } from "react";
-import NativeBannerAd from "@/components/ads/NativeBanner";
-import AdsterraSmallBanner from "@/components/ads/AdsterraSmallBanner";
+
 import { searchArticles } from "@/lib/actions/searchArticles";
 
 // 1. Fix generateMetadata: await params and searchParams
@@ -112,9 +111,6 @@ export default async function SearchPage({ params, searchParams }) {
           </Suspense>
         </main>
       </div>
-
-      <NativeBannerAd />
-      <AdsterraSmallBanner id="small-banner-2" />
     </>
   );
 }

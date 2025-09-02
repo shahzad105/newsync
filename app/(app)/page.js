@@ -1,4 +1,3 @@
-import NativeBannerAd from "@/components/ads/NativeBanner";
 import Hero from "@/components/Hero";
 import BusinessAutoLayout from "@/layouts/BusinessAuto";
 import LatestReadmore from "@/layouts/LatestReadMore";
@@ -46,7 +45,6 @@ export default async function HomePage() {
       <NewsSectionLayout sportsArticles={sportsArticles?.articles} />
       <BusinessAutoLayout />
       <LatestReadmore latestArtocles={latestArticles?.articles} />
-      <NativeBannerAd />
     </>
   );
 }

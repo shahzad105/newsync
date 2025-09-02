@@ -64,11 +64,10 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-E5FR591D3R');
           `}
         </Script>
-
-        {/* ✅ Ad Script */}
         <Script
-          type="text/javascript"
-          src="//pl27379521.profitableratecpm.com/e9/ef/24/e9ef24bf836fc742f68cedbc9349f44d.js"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7195029136262194"
+          crossorigin="anonymous"
           strategy="afterInteractive"
         />
       </head>
@@ -78,13 +77,6 @@ export default async function RootLayout({ children }) {
           <SessionWrapper session={session}>{children}</SessionWrapper>
           <Toaster position="top-right" />
         </ReactQueryProvider>
-
-        {/* ✅ Another Ad Script */}
-        <Script
-          type="text/javascript"
-          src="//pl27379678.profitableratecpm.com/e3/c3/e0/e3c3e0b7ef0a36f8a5424c73baf5964b.js"
-          strategy="lazyOnload"
-        />
       </body>
     </html>
   );

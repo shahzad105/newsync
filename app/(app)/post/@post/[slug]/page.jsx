@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import PostPageSkeleton from "@/skeletons/PostLoadingSkeleton";
-import NativeBannerAd from "@/components/ads/NativeBanner";
 
 // Fetch helper
 async function getArticle(slug) {
@@ -172,8 +171,6 @@ export default async function PostPage({ params }) {
           )}
         </Suspense>
       </div>
-
-      <NativeBannerAd />
     </>
   );
 }

@@ -3,7 +3,6 @@ import Script from "next/script"; // ✅ For JSON-LD
 
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import News from "./News";
-import AdsterraBanner from "./ads/AdsterraBanner";
 
 const Latest = ({ articles }) => {
   // ✅ JSON-LD Schema for Latest Articles

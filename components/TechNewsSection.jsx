@@ -8,7 +8,6 @@ import useGetArticles from "@/hooks/useGetArticlse";
 import Loader from "./Loader";
 import TechNewsSkeleton from "@/skeletons/TechNewsSkeleton";
 import Image from "next/image";
-import AdsterraSmallBanner from "./ads/AdsterraSmallBanner";
 
 const TechNewsSection = () => {
   const [page, setPage] = useState(1);
@@ -57,7 +56,7 @@ const TechNewsSection = () => {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <AdsterraSmallBanner id="small-banner-2" />
+
       <div className="flex items-center mb-4 p-1 mt-2">
         <div className="flex gap-2 mr-4">
           <button
