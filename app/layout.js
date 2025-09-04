@@ -33,6 +33,10 @@ export default async function RootLayout({ children }) {
     <html lang="en" className={poppins.variable}>
       <head>
         {/* ✅ Canonical for homepage */}
+        <meta
+          name="google-site-verification"
+          content="2uJWjuFzG_4C52bnlTlTkqsjMMZS6nZOQdTpX-lEF9Q"
+        />
         <link rel="canonical" href="https://www.newsync.site/" />
 
         {/* ✅ JSON-LD structured data */}
