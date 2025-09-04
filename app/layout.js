@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 import { Toaster } from "react-hot-toast";
@@ -6,10 +6,11 @@ import { auth } from "@/auth";
 import SessionWrapper from "@/components/SessionWrapper";
 import Script from "next/script";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
-const geistMono = Geist_Mono({
+// ✅ Load Poppins (default for all text)
+const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
+  weight: ["400", "500", "600", "700"], // regular → bold
+  variable: "--font-poppins",
 });
 
 export const metadata = {
@@ -29,8 +30,11 @@ export default async function RootLayout({ children }) {
   const session = await auth();
 
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html lang="en" className={poppins.variable}>
       <head>
+        {/* ✅ Canonical for homepage */}
+        <link rel="canonical" href="https://www.newsync.site/" />
+
         {/* ✅ JSON-LD structured data */}
         <Script
           id="structured-data"
@@ -64,19 +68,20 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-E5FR591D3R');
           `}
         </Script>
+
+        {/* ✅ Google AdSense */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7195029136262194"
-          crossorigin="anonymous"
-          strategy="afterInteractive"
+          crossOrigin="anonymous"
         />
-        <meta
-          name="google-adsense-account"
-          content="ca-pub-7195029136262194"
-        ></meta>
+        <meta name="google-adsense-account" content="ca-pub-7195029136262194" />
       </head>
 
-      <body className="bg-white text-black" suppressHydrationWarning={true}>
+      <body
+        className="bg-white text-black font-sans"
+        suppressHydrationWarning={true}
+      >
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>
           <Toaster position="top-right" />

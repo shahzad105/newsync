@@ -5,7 +5,7 @@ import Link from "next/link";
 import Script from "next/script";
 import React, { Suspense } from "react";
 
-//  generateMetadata with awaited params + searchParams
+// ✅ Generate metadata for SEO
 export async function generateMetadata({ params, searchParams }) {
   const { category: categoryParam = "" } = await params;
   const { page: pageQuery } = await searchParams;
@@ -16,6 +16,7 @@ export async function generateMetadata({ params, searchParams }) {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(" ");
 
+  // ✅ Fetch only 1 article for OG image
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}&latest=true`,
     { cache: "no-store" }
@@ -24,9 +25,15 @@ export async function generateMetadata({ params, searchParams }) {
   const firstImage =
     data?.articles?.[0]?.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
+  // ✅ Meta values
   const title = `${formattedCategory} News - Page ${pageNum} | NewSync`;
   const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum}.`;
-  const pageUrl = `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`;
+
+  // ✅ Canonical URL (no ?page=1)
+  const pageUrl =
+    pageNum === 1
+      ? `${process.env.SITE_URL}/category/${categoryParam}`
+      : `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`;
 
   return {
     title,
@@ -56,7 +63,9 @@ export async function generateMetadata({ params, searchParams }) {
       canonical: pageUrl,
       prev:
         pageNum > 1 &&
-        `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum - 1}`,
+        `${process.env.SITE_URL}/category/${categoryParam}${
+          pageNum - 1 === 1 ? "" : `?page=${pageNum - 1}`
+        }`,
       next:
         data?.totalPages > pageNum &&
         `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum + 1}`,
@@ -65,7 +74,7 @@ export async function generateMetadata({ params, searchParams }) {
   };
 }
 
-//  CategoryPage component with awaited params + searchParams
+// ✅ Category Page component
 export default async function CategoryPage({ params, searchParams }) {
   const { category: categoryParam = "" } = await params;
   const { page: pageQuery } = await searchParams;
@@ -76,6 +85,7 @@ export default async function CategoryPage({ params, searchParams }) {
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(" ");
 
+  // ✅ Fetch full articles for the page
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
     { cache: "no-store" }
@@ -86,6 +96,7 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <>
+      {/* ✅ Structured Data: Category Listing */}
       <Script
         id="category-structured-data"
         type="application/ld+json"
@@ -125,11 +136,13 @@ export default async function CategoryPage({ params, searchParams }) {
               "@type": "ListItem",
               position: idx + 1,
               url: `${process.env.SITE_URL}/post/${article.slug}`,
+              name: article.title, // ✅ Include article title for richer SEO
             })),
           },
         })}
       </Script>
 
+      {/* ✅ Page Content */}
       <div className="relative md:py-10 space-y-5">
         {/* Breadcrumb */}
         <nav className="text-sm pl-2 md:pl-0">
@@ -147,7 +160,7 @@ export default async function CategoryPage({ params, searchParams }) {
           {formattedCategory} News
         </h1>
 
-        {/* Filters */}
+        {/* Category Filters */}
         <div className="flex flex-wrap gap-3 pl-2 md:pl-0">
           {["Business", "Entertainment", "Sports", "Tech", "Travel"].map(
             (tag) => (
@@ -162,7 +175,7 @@ export default async function CategoryPage({ params, searchParams }) {
           )}
         </div>
 
-        {/* News */}
+        {/* News Articles */}
         <section>
           <Suspense fallback={<NewsSkeleton />}>
             {articles.length ? (
