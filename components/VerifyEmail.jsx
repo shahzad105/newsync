@@ -70,7 +70,7 @@ export default function VerifyEmail({ token, email }) {
               Your account is now verified. You may log in.
             </p>
             <Link
-              href="/login"
+              href="/auth/login"
               className="mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg shadow"
             >
               Go to Login

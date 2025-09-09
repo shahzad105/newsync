@@ -6,10 +6,9 @@ import { auth } from "@/auth";
 import SessionWrapper from "@/components/SessionWrapper";
 import Script from "next/script";
 
-// ✅ Load Poppins (default for all text)
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"], // regular → bold
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
 
@@ -32,12 +31,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <head>
-        {/* ✅ Canonical for homepage */}
-        <meta
-          name="google-site-verification"
-          content="2uJWjuFzG_4C52bnlTlTkqsjMMZS6nZOQdTpX-lEF9Q"
-        />
-        <link rel="canonical" href="https://www.newsync.site/" />
+  
 
         {/* ✅ JSON-LD structured data */}
         <Script
