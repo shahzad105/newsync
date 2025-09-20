@@ -31,9 +31,6 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <head>
-  
-
-        {/* ✅ JSON-LD structured data */}
         <Script
           id="structured-data"
           type="application/ld+json"
@@ -52,8 +49,6 @@ export default async function RootLayout({ children }) {
             },
           })}
         </Script>
-
-        {/* ✅ Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-E5FR591D3R"
           strategy="afterInteractive"
@@ -66,8 +61,6 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-E5FR591D3R');
           `}
         </Script>
-
-        {/* ✅ Google AdSense */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7195029136262194"
@@ -75,7 +68,6 @@ export default async function RootLayout({ children }) {
         />
         <meta name="google-adsense-account" content="ca-pub-7195029136262194" />
       </head>
-
       <body
         className="bg-white text-black font-sans"
         suppressHydrationWarning={true}

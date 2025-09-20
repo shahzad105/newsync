@@ -25,7 +25,7 @@ export default function SearchCategory({ filters = [] }) {
     // Preserve existing params
     const params = new URLSearchParams(searchParams);
     params.set("category", value);
-    params.set("page", "1"); // reset page when category changes
+    params.set("page", "1"); 
     router.push(`?${params.toString()}`);
   };
 
