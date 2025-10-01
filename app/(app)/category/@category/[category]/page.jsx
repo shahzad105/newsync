@@ -1,11 +1,10 @@
 import CustomPagination from "@/components/CustomPagination";
 import News from "@/components/News";
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
+import next from "next";
 import Link from "next/link";
 import Script from "next/script";
-import React, { Suspense } from "react";
 
-// ✅ Generate metadata for SEO
 export async function generateMetadata({ params, searchParams }) {
   const { category: categoryParam = "" } = await params;
   const { page: pageQuery } = await searchParams;
@@ -19,7 +18,7 @@ export async function generateMetadata({ params, searchParams }) {
   // ✅ Fetch only 1 article for OG image
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}&latest=true`,
-    { cache: "no-store" }
+    { next: { revalidate: 60 } }
   );
   const data = await res.json();
   const firstImage =
@@ -88,7 +87,7 @@ export default async function CategoryPage({ params, searchParams }) {
   // ✅ Fetch full articles for the page
   const res = await fetch(
     `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
-    { cache: "no-store" }
+    { next: { revalidate: 60 } }
   );
   const data = await res.json();
   const articles = data?.articles ?? [];
@@ -177,13 +176,11 @@ export default async function CategoryPage({ params, searchParams }) {
 
         {/* News Articles */}
         <section>
-          <Suspense fallback={<NewsSkeleton />}>
-            {articles.length ? (
-              <News post={articles} />
-            ) : (
-              <p>No articles found.</p>
-            )}
-          </Suspense>
+          {articles.length ? (
+            <News post={articles} />
+          ) : (
+            <p>No articles found.</p>
+          )}
         </section>
 
         {/* Pagination */}

@@ -68,7 +68,7 @@ const PopularNews = () => {
         <>
           {/* Fetching Overlay for next pages */}
           {isFetching && (
-            <div className="absolute inset-0 w-full h-full bg-black/2 z-20 flex items-center justify-center">
+            <div className="absolute inset-0 w-full h-full  z-20 flex items-center justify-center">
               <Loader />
             </div>
           )}

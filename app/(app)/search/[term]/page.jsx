@@ -2,8 +2,6 @@ import Head from "next/head";
 import SearchCategory from "@/components/SearchCategory";
 import News from "@/components/News";
 import CustomPagination from "@/components/CustomPagination";
-import NewsSkeleton from "@/skeletons/NewsSkeleton";
-import { Suspense } from "react";
 
 import { searchArticles } from "@/lib/actions/searchArticles";
 
@@ -92,23 +90,21 @@ export default async function SearchPage({ params, searchParams }) {
         </div>
 
         <main className="relative min-h-[300px]">
-          <Suspense fallback={<NewsSkeleton />}>
-            {articles.length ? (
-              <>
-                <News post={articles} />
-                <div className="mt-6">
-                  <CustomPagination
-                    currentPage={page - 1}
-                    pageCount={totalPages}
-                  />
-                </div>
-              </>
-            ) : (
-              <p className="text-center text-gray-600 mt-10">
-                No results found for "{term}".
-              </p>
-            )}
-          </Suspense>
+          {articles.length ? (
+            <>
+              <News post={articles} />
+              <div className="mt-6">
+                <CustomPagination
+                  currentPage={page - 1}
+                  pageCount={totalPages}
+                />
+              </div>
+            </>
+          ) : (
+            <p className="text-center text-gray-600 mt-10">
+              No results found for "{term}".
+            </p>
+          )}
         </main>
       </div>
     </>

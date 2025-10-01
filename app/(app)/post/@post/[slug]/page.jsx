@@ -1,14 +1,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import Script from "next/script";
-import PostPageSkeleton from "@/skeletons/PostLoadingSkeleton";
 
 // Fetch helper
 async function getArticle(slug) {
   try {
-    const res = await fetch(`${process.env.SITE_URL}/api/article/${slug}`, {
-      cache: "no-store",
-    });
+    const res = await fetch(`${process.env.SITE_URL}/api/article/${slug}`);
     if (!res.ok) return null;
     return res.json();
   } catch (err) {
@@ -137,39 +134,38 @@ export default async function PostPage({ params }) {
             {slug.replaceAll("-", " ")}
           </span>
         </nav>
-        <Suspense fallback={<PostPageSkeleton />}>
-          {post ? (
-            <>
+
+        {post ? (
+          <>
+            <div className="mb-6">
+              <h1 className="text-xl md:text-3xl font-bold mb-2">
+                {post.title}
+              </h1>
+              <p className="text-sm text-gray-600">
+                By{" "}
+                <span className="font-medium">
+                  {post.postedBy?.username || "Admin"}
+                </span>{" "}
+                • {new Date(post.createdAt).toDateString()}
+              </p>
+            </div>
+            {post.image && (
               <div className="mb-6">
-                <h1 className="text-xl md:text-3xl font-bold mb-2">
-                  {post.title}
-                </h1>
-                <p className="text-sm text-gray-600">
-                  By{" "}
-                  <span className="font-medium">
-                    {post.postedBy?.username || "Admin"}
-                  </span>{" "}
-                  • {new Date(post.createdAt).toDateString()}
-                </p>
+                <img
+                  src={post.image.url}
+                  alt={post.title}
+                  className="w-full md:h-80 h-60 object-cover rounded-md shadow"
+                />
               </div>
-              {post.image && (
-                <div className="mb-6">
-                  <img
-                    src={post.image.url}
-                    alt={post.title}
-                    className="w-full md:h-80 h-60 object-cover rounded-md shadow"
-                  />
-                </div>
-              )}
-              <div
-                className="text-gray-800 leading-7 whitespace-pre-line"
-                dangerouslySetInnerHTML={{ __html: post.description }}
-              />
-            </>
-          ) : (
-            <p className="text-red-500 text-center mt-6">Post not found</p>
-          )}
-        </Suspense>
+            )}
+            <div
+              className="text-gray-800 leading-7 whitespace-pre-line"
+              dangerouslySetInnerHTML={{ __html: post.description }}
+            />
+          </>
+        ) : (
+          <p className="text-red-500 text-center mt-6">Post not found</p>
+        )}
       </div>
     </>
   );
