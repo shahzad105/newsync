@@ -6,7 +6,7 @@ export default function robots() {
       {
         userAgent: "*",
         allow: "/", // allow everything
-        disallow: ["/api/", "/dashboard/", "/profile/"], // block private sections
+        disallow: [ "/dashboard/", "/profile/"], // block private sections
       },
       {
         userAgent: "Googlebot-Image",
