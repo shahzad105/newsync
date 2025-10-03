@@ -53,32 +53,42 @@ export default async function sitemap() {
     "Nonprofits",
   ];
 
+  // Safe slug generator
+  const toSlug = (str) =>
+    str
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^\w]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
   const pages = [
     {
       url: `${baseUrl}/`,
       lastModified: now,
-      changeFrequency: "hourly", // ✅ changed for news freshness
+      changeFrequency: "hourly",
       priority: 1.0,
     },
   ];
 
+  // Add category pages
   categories.forEach((cat) => {
-    const slug = cat.toLowerCase().replace(/ & /g, "-").replace(/\s+/g, "-");
     pages.push({
-      url: `${baseUrl}/category/${slug}`,
+      url: `${baseUrl}/category/${toSlug(cat)}`,
       lastModified: now,
-      changeFrequency: "daily", // ✅ categories update often
+      changeFrequency: "daily",
       priority: 0.8,
     });
   });
 
+  // Add posts from DB
   const posts = await getPostSlugs();
   posts.forEach((post) => {
     pages.push({
       url: `${baseUrl}/post/${post.slug}`,
-      lastModified: new Date(post.updatedAt || now),
-      changeFrequency: "never", // ✅ news articles usually don’t change after publish
-      priority: 0.7, // ✅ slightly lower than categories
+      lastModified: post.updatedAt ? new Date(post.updatedAt) : now,
+      changeFrequency: "never",
+      priority: 0.7,
     });
   });
 
