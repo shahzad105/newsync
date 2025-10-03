@@ -14,6 +14,6 @@ export default function robots() {
       },
     ],
     sitemap: "https://www.newsync.site/sitemap.xml",
-    host: "https://www.newsync.site",
+
   };
 }
