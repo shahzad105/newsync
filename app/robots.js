@@ -5,15 +5,14 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-        allow: "/", // allow everything
-        disallow: [ "/dashboard/", "/profile/"], // block private sections
+        allow: ["/", "/_next/", "/static/"], // explicitly allow Next.js assets
+        disallow: ["/dashboard/", "/profile/"], // block private sections
       },
       {
         userAgent: "Googlebot-Image",
-        allow: ["/"], // allow images for SEO
+        allow: ["/", "/_next/image"], // allow all images including optimized ones
       },
     ],
     sitemap: "https://www.newsync.site/sitemap.xml",
-
   };
 }
