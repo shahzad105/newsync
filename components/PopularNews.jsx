@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import Link from "next/link";
-import Script from "next/script";
+
 import useGetArticles from "@/hooks/useGetArticlse";
 import Loader from "./Loader";
 import PopularNewsSkeleton from "@/skeletons/PopularNewsSkeleton";
@@ -30,30 +30,8 @@ const PopularNews = () => {
     if (!isLoading && page < totalPages) setPage((prev) => prev + 1);
   };
 
-  // ✅ JSON-LD Script for Popular News
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: articles.map((post, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: `${process.env.SITE_URL}/post/${post.slug}`,
-      name: post.title,
-      image: post.image?.url || `${process.env.SITE_URL}/default.jpg`, // ✅ Added image for better SEO
-    })),
-  };
-
   return (
     <div className="relative">
-      {/* ✅ JSON-LD SEO Script */}
-      {articles.length > 0 && (
-        <Script
-          id="popular-news-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-
       {/* First Load Skeleton */}
       {isLoading ? (
         <>

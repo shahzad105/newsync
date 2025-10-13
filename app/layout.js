@@ -12,16 +12,73 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+// ✅ Full SEO Metadata Configuration
 export const metadata = {
   metadataBase: new URL("https://www.newsync.site"),
-  title: "NewSync - Your News, Your Way",
-  description: "Stay updated with the latest news tailored for you.",
+  title: {
+    default: "NewSync - Your News, Your Way",
+    template: "%s | NewSync",
+  },
+  description:
+    "Stay updated with the latest news from Pakistan and around the world, tailored just for you. Explore trending stories, tech, startups, sports, and more.",
+  keywords: [
+    "Pakistan news",
+    "latest news",
+    "startup news",
+    "tech news",
+    "sports highlights",
+    "NewSync",
+    "youth trends",
+    "business news",
+    "media news",
+    "daily updates",
+  ],
+  authors: [{ name: "NewSync Team", url: "https://www.newsync.site/about" }],
+  creator: "NewSync Media",
+  publisher: "NewSync",
   openGraph: {
     title: "NewSync - Your News, Your Way",
-    description: "Stay updated with the latest news tailored for you.",
+    description:
+      "Get the latest news, startup updates, and trending stories tailored to your interests.",
     url: "https://www.newsync.site",
     siteName: "NewSync",
+    images: [
+      {
+        url: "https://www.newsync.site/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "NewSync - Latest News and Updates",
+      },
+    ],
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NewSync - Your News, Your Way",
+    description:
+      "Stay updated with the latest news, trends, and highlights tailored for you.",
+    creator: "@newsync",
+    images: ["https://www.newsync.site/newsync.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+  },
+  manifest: "/site.webmanifest",
+  alternates: {
+    canonical: "https://www.newsync.site",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      maxImagePreview: "large",
+      maxSnippet: -1,
+      maxVideoPreview: -1,
+    },
   },
 };
 
@@ -31,24 +88,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <head>
-        <Script
-          id="structured-data"
-          type="application/ld+json"
-          strategy="afterInteractive"
-        >
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "NewSync",
-            url: "https://www.newsync.site/",
-            image: "https://www.newsync.site/favicon.ico",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: "https://www.newsync.site/search/{search_term_string}",
-              "query-input": "required name=search_term_string",
-            },
-          })}
-        </Script>
+        {/* ✅ Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-E5FR591D3R"
           strategy="afterInteractive"
@@ -61,13 +101,26 @@ export default async function RootLayout({ children }) {
             gtag('config', 'G-E5FR591D3R');
           `}
         </Script>
+
+        {/* ✅ Google AdSense */}
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7195029136262194"
           crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
         <meta name="google-adsense-account" content="ca-pub-7195029136262194" />
+
+        {/* ✅ Responsive Design Meta */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* ✅ Fallback for keywords (Next.js ignores them in metadata sometimes) */}
+        <meta
+          name="keywords"
+          content="World news, latest news, startup news, tech news, sports highlights, NewSync, youth trends, business news, daily updates"
+        />
       </head>
+
       <body
         className="bg-white text-black font-sans"
         suppressHydrationWarning={true}

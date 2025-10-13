@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
-import Script from "next/script";
+
 import useGetArticles from "@/hooks/useGetArticlse";
 import Loader from "./Loader";
 import TechNewsSkeleton from "@/skeletons/TechNewsSkeleton";
@@ -34,29 +34,8 @@ const TechNewsSection = () => {
     }
   };
 
-  // ✅ JSON-LD Script for Tech Articles
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: articles.map((post, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: `${process.env.SITE_URL}/post/${post.slug}`,
-      name: post.title,
-    })),
-  };
-
   return (
     <div className="relative">
-      {/* ✅ JSON-LD SEO Script */}
-      {articles.length > 0 && (
-        <Script
-          id="tech-news-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-
       <div className="flex items-center mb-4 p-1 mt-2">
         <div className="flex gap-2 mr-4">
           <button

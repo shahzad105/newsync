@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import Script from "next/script"; // ✅ Added for SEO JSON-LD
 
 import ReadMoreSkeleton from "@/skeletons/ReadMoreSkeleton";
 import useGetArticles from "@/hooks/useGetArticlse";
@@ -34,30 +33,8 @@ const ReadMore = () => {
     }
   };
 
-  // ✅ JSON-LD Schema for Must Read Articles
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: articles.map((post, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: `${process.env.SITE_URL}/post/${post.slug}`,
-      name: post.title,
-      image: post.image?.url || `${process.env.SITE_URL}/default.jpg`,
-    })),
-  };
-
   return (
     <div className="py-6 mx-auto relative">
-      {/* ✅ Inject JSON-LD if articles exist */}
-      {articles.length > 0 && (
-        <Script
-          id="readmore-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-
       {/* Title */}
       <h2 className="text-2xl p-1 font-bold tracking-tight text-green-800 whitespace-nowrap underline underline-offset-10 decoration-red-600 decoration-4 mb-6">
         Must Read

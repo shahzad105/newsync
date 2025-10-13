@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import Script from "next/script";
 
 // Fetch helper
 async function getArticle(slug) {
@@ -79,47 +78,8 @@ export default async function PostPage({ params }) {
   const data = await getArticle(slug);
   const post = data?.article;
 
-  const jsonLd = post && {
-    "@context": "https://schema.org",
-    "@type": "NewsArticle",
-    headline: post.title,
-    description: getPlainText(post.description),
-    image: post.image?.url
-      ? [post.image.url]
-      : [`${process.env.SITE_URL}/newsync.png`],
-    author: [
-      {
-        "@type": "Person",
-        name: post.postedBy?.username || "Admin",
-        url: post.postedBy?.url || undefined,
-      },
-    ],
-    publisher: {
-      "@type": "Organization",
-      name: "NewSync",
-      logo: {
-        "@type": "ImageObject",
-        url: `${process.env.SITE_URL}/logo.png`,
-      },
-    },
-    datePublished: post.createdAt,
-    dateModified: post.updatedAt || post.createdAt,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${process.env.SITE_URL}/post/${slug}`,
-    },
-  };
-
   return (
     <>
-      {jsonLd && (
-        <Script
-          id="article-jsonld"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-
       <div className="md:px-4 md:py-8">
         <nav className="text-sm text-gray-500 mb-4">
           <Link href="/" className="hover:underline text-blue-600">

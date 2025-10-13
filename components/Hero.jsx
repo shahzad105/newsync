@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
+i;
 
 // ✅ Dynamic Metadata for Hero Section
 
@@ -15,25 +15,8 @@ export default async function Hero({ articles }) {
 
   const [firstPost, ...smallPosts] = articles;
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: articles.map((post, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: `${process.env.SITE_URL}/post/${post.slug}`,
-      name: post.title,
-    })),
-  };
-
   return (
     <>
-      <Script
-        id="hero-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       <div className="md:py-9 py-3">
         <div className="flex flex-col md:flex-row gap-5">
           {/* Left - Main Featured Post */}

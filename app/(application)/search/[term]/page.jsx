@@ -55,32 +55,8 @@ export default async function SearchPage({ params, searchParams }) {
   const articles = data?.articles || [];
   const totalPages = data?.totalPages || 1;
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: `Search results for "${term}"`,
-    description: `Explore results for "${term}" in categories: ${
-      filters.join(", ") || "All"
-    }. Page ${page}.`,
-    url: `${process.env.SITE_URL}/search/${encodeURIComponent(
-      term
-    )}?category=${encodeURIComponent(filters.join(","))}&page=${page}`,
-    mainEntity: articles.map((post) => ({
-      "@type": "Article",
-      headline: post.title,
-      url: `${process.env.SITE_URL}/posts/${post.slug}`,
-    })),
-  };
-
   return (
     <>
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      </Head>
-
       <div className="flex flex-col pt-3 gap-6">
         <div className="flex md:flex-row flex-col items-start justify-between gap-4 rounded">
           <h1 className="text-lg font-semibold text-blue-900">

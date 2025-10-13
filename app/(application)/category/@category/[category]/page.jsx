@@ -3,7 +3,6 @@ import News from "@/components/News";
 import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import next from "next";
 import Link from "next/link";
-import Script from "next/script";
 
 export async function generateMetadata({ params, searchParams }) {
   const { category: categoryParam = "" } = await params;
@@ -95,52 +94,6 @@ export default async function CategoryPage({ params, searchParams }) {
 
   return (
     <>
-      {/* ✅ Structured Data: Category Listing */}
-      <Script
-        id="category-structured-data"
-        type="application/ld+json"
-        strategy="afterInteractive"
-      >
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "CollectionPage",
-          name: `${formattedCategory} News - NewSync`,
-          description: `Latest ${formattedCategory} news and updates from NewSync.`,
-          url: `${process.env.SITE_URL}/category/${categoryParam}`,
-          isPartOf: {
-            "@type": "WebSite",
-            name: "NewSync",
-            url: process.env.SITE_URL,
-          },
-          breadcrumb: {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: process.env.SITE_URL,
-              },
-              {
-                "@type": "ListItem",
-                position: 2,
-                name: formattedCategory,
-                item: `${process.env.SITE_URL}/category/${categoryParam}`,
-              },
-            ],
-          },
-          mainEntity: {
-            "@type": "ItemList",
-            itemListElement: articles.map((article, idx) => ({
-              "@type": "ListItem",
-              position: idx + 1,
-              url: `${process.env.SITE_URL}/post/${article.slug}`,
-              name: article.title, // ✅ Include article title for richer SEO
-            })),
-          },
-        })}
-      </Script>
-
       {/* ✅ Page Content */}
       <div className="relative md:py-10 space-y-5">
         {/* Breadcrumb */}
