@@ -1,17 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import getSingleArticle from "@/lib/actions/getSingleArticle";
 
 // Fetch helper
-async function getArticle(slug) {
-  try {
-    const res = await fetch(`${process.env.SITE_URL}/api/article/${slug}`);
-    if (!res.ok) return null;
-    return res.json();
-  } catch (err) {
-    console.error("Article fetch error:", err);
-    return null;
-  }
-}
 
 function getPlainText(html = "", maxLen = 160) {
   const text = html.replace(/<[^>]+>/g, "");
@@ -23,8 +14,8 @@ function getPlainText(html = "", maxLen = 160) {
 // Metadata
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const data = await getArticle(slug);
-  const post = data?.article;
+  const res = await getSingleArticle(slug);
+  const post = res?.data;
 
   if (!post)
     return {
@@ -75,8 +66,8 @@ export async function generateMetadata({ params }) {
 // Page Component
 export default async function PostPage({ params }) {
   const { slug } = await params;
-  const data = await getArticle(slug);
-  const post = data?.article;
+  const res = await getSingleArticle(slug);
+  const post = res?.data;
 
   return (
     <>

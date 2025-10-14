@@ -1,7 +1,5 @@
 import CustomPagination from "@/components/CustomPagination";
 import News from "@/components/News";
-import NewsSkeleton from "@/skeletons/NewsSkeleton";
-import next from "next";
 import Link from "next/link";
 
 export async function generateMetadata({ params, searchParams }) {
