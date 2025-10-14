@@ -1,4 +1,5 @@
-import { Suspense } from "react";
+export const revalidate = 3600; // 1 hour revalidation
+
 import Link from "next/link";
 import getSingleArticle from "@/lib/actions/getSingleArticle";
 
