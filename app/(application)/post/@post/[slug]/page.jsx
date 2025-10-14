@@ -1,10 +1,9 @@
-export const revalidate = 3600; // 1 hour revalidation
+export const revalidate = 3600; // Revalidate every 1 hour
 
 import Link from "next/link";
 import getSingleArticle from "@/lib/actions/getSingleArticle";
 
-// Fetch helper
-
+// ✅ Helper: Clean HTML for meta description
 function getPlainText(html = "", maxLen = 160) {
   const text = html.replace(/<[^>]+>/g, "");
   return text.length > maxLen
@@ -12,113 +11,159 @@ function getPlainText(html = "", maxLen = 160) {
     : text.trim();
 }
 
-// Metadata
+// ✅ Metadata for SEO
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const res = await getSingleArticle(slug);
   const post = res?.data;
 
-  if (!post)
+  if (!post) {
     return {
       title: "404 - Post Not Found | NewSync",
-      description: `No blog post found for ${slug}`,
+      description: `No article found for slug: ${slug}`,
       robots: { index: false, follow: false },
     };
+  }
 
   const title = `${post.title} | NewSync`;
   const description = getPlainText(post.description);
   const url = `${process.env.SITE_URL}/post/${slug}`;
-  const images = post.image?.url
-    ? [
-        post.image.url,
-        `${post.image.url}?w=800`, // example alt sizes
-        `${post.image.url}?w=1200`,
-      ]
-    : [`${process.env.SITE_URL}/newsync.png`];
+  const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;
+
+  // ✅ JSON-LD Structured Data for Google
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: post.title,
+    description: description,
+    image: [image],
+    datePublished: post.createdAt,
+    dateModified: post.updatedAt || post.createdAt,
+    author: {
+      "@type": "Person",
+      name: post.postedBy?.username || "Admin",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "NewSync",
+      logo: {
+        "@type": "ImageObject",
+        url: `${process.env.SITE_URL}/newsync.png`,
+      },
+    },
+  };
 
   return {
     title,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title,
       description,
       url,
       siteName: "NewSync",
       type: "article",
-      images: images.map((url) => ({
-        url,
-        width: 1200,
-        height: 630,
-        alt: post.title,
-      })),
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [images[0]],
+      images: [image],
       creator: "@NewSync",
     },
-    alternates: { canonical: url },
+    other: {
+      "script:ld+json": JSON.stringify(jsonLd),
+    },
     robots: { index: true, follow: true },
   };
 }
 
-// Page Component
+// ✅ Main Page Component (Server-Side Rendered)
 export default async function PostPage({ params }) {
   const { slug } = await params;
   const res = await getSingleArticle(slug);
   const post = res?.data;
 
-  return (
-    <>
-      <div className="md:px-4 md:py-8">
-        <nav className="text-sm text-gray-500 mb-4">
-          <Link href="/" className="hover:underline text-blue-600">
-            Home
-          </Link>{" "}
-          &gt;{" "}
-          <Link href="/blog" className="hover:underline text-blue-600">
-            Article
-          </Link>{" "}
-          &gt;{" "}
-          <span className="text-gray-800 font-medium text-xs md:text-sm capitalize">
-            {slug.replaceAll("-", " ")}
-          </span>
-        </nav>
-
-        {post ? (
-          <>
-            <div className="mb-6">
-              <h1 className="text-xl md:text-3xl font-bold mb-2">
-                {post.title}
-              </h1>
-              <p className="text-sm text-gray-600">
-                By{" "}
-                <span className="font-medium">
-                  {post.postedBy?.username || "Admin"}
-                </span>{" "}
-                • {new Date(post.createdAt).toDateString()}
-              </p>
-            </div>
-            {post.image && (
-              <div className="mb-6">
-                <img
-                  src={post.image.url}
-                  alt={post.title}
-                  className="w-full md:h-80 h-60 object-cover rounded-md shadow"
-                />
-              </div>
-            )}
-            <div
-              className="text-gray-800 leading-7 whitespace-pre-line"
-              dangerouslySetInnerHTML={{ __html: post.description }}
-            />
-          </>
-        ) : (
-          <p className="text-red-500 text-center mt-6">Post not found</p>
-        )}
+  if (!post) {
+    return (
+      <div className="px-4 py-12 text-center">
+        <h1 className="text-2xl font-bold mb-2">404 - Post Not Found</h1>
+        <p className="text-gray-600">
+          The article you’re looking for doesn’t exist or has been removed.
+        </p>
+        <Link
+          href="/"
+          className="inline-block mt-4 text-blue-600 hover:underline"
+        >
+          Go back home
+        </Link>
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className="md:px-4 md:py-8 px-3 py-6">
+      {/* ✅ Breadcrumb Navigation */}
+      <nav className="text-sm text-gray-500 mb-4">
+        <Link href="/" className="hover:underline text-blue-600">
+          Home
+        </Link>{" "}
+        &gt;{" "}
+        <Link href="/blog" className="hover:underline text-blue-600">
+          Article
+        </Link>{" "}
+        &gt;{" "}
+        <span className="text-gray-800 font-medium text-xs md:text-sm capitalize">
+          {slug.replaceAll("-", " ")}
+        </span>
+      </nav>
+
+      {/* ✅ Post Content */}
+      <article>
+        <header className="mb-6">
+          <h1 className="text-xl md:text-3xl font-bold mb-2">{post.title}</h1>
+          <p className="text-sm text-gray-600">
+            By{" "}
+            <span className="font-medium">
+              {post.postedBy?.username || "Admin"}
+            </span>{" "}
+            • {new Date(post.createdAt).toDateString()}
+          </p>
+        </header>
+
+        {/* ✅ Featured Image */}
+        {post.image?.url ? (
+          <div className="mb-6">
+            <img
+              src={post.image.url}
+              alt={post.title}
+              className="w-full md:h-80 h-60 object-cover rounded-md shadow"
+            />
+          </div>
+        ) : (
+          <div className="mb-6">
+            <img
+              src="/fallback.jpg"
+              alt="Default image"
+              className="w-full md:h-80 h-60 object-cover rounded-md shadow"
+            />
+          </div>
+        )}
+
+        {/* ✅ Post Description (Server Rendered HTML) */}
+        <div
+          className="text-gray-800 leading-7 prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.description }}
+        />
+      </article>
+    </div>
   );
 }
