@@ -92,23 +92,6 @@ export default async function PostPage({ params }) {
   const res = await getSingleArticle(slug);
   const post = res?.data;
 
-  if (!post) {
-    return (
-      <div className="px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold mb-2">404 - Post Not Found</h1>
-        <p className="text-gray-600">
-          The article you’re looking for doesn’t exist or has been removed.
-        </p>
-        <Link
-          href="/"
-          className="inline-block mt-4 text-blue-600 hover:underline"
-        >
-          Go back home
-        </Link>
-      </div>
-    );
-  }
-
   return (
     <div className="md:px-4 md:py-8 px-3 py-6">
       {/* ✅ Breadcrumb Navigation */}
@@ -127,43 +110,51 @@ export default async function PostPage({ params }) {
       </nav>
 
       {/* ✅ Post Content */}
-      <article>
-        <header className="mb-6">
-          <h1 className="text-xl md:text-3xl font-bold mb-2">{post.title}</h1>
-          <p className="text-sm text-gray-600">
-            By{" "}
-            <span className="font-medium">
-              {post.postedBy?.username || "Admin"}
-            </span>{" "}
-            • {new Date(post.createdAt).toDateString()}
-          </p>
-        </header>
+      {post ? (
+        <>
+          <article>
+            <header className="mb-6">
+              <h1 className="text-xl md:text-3xl font-bold mb-2">
+                {post.title}
+              </h1>
+              <p className="text-sm text-gray-600">
+                By{" "}
+                <span className="font-medium">
+                  {post.postedBy?.username || "Admin"}
+                </span>{" "}
+                • {new Date(post.createdAt).toDateString()}
+              </p>
+            </header>
 
-        {/* ✅ Featured Image */}
-        {post.image?.url ? (
-          <div className="mb-6">
-            <img
-              src={post.image.url}
-              alt={post.title}
-              className="w-full md:h-80 h-60 object-cover rounded-md shadow"
-            />
-          </div>
-        ) : (
-          <div className="mb-6">
-            <img
-              src="/fallback.jpg"
-              alt="Default image"
-              className="w-full md:h-80 h-60 object-cover rounded-md shadow"
-            />
-          </div>
-        )}
+            {/* ✅ Featured Image */}
+            {post.image?.url ? (
+              <div className="mb-6">
+                <img
+                  src={post.image.url}
+                  alt={post.title}
+                  className="w-full md:h-80 h-60 object-cover rounded-md shadow"
+                />
+              </div>
+            ) : (
+              <div className="mb-6">
+                <img
+                  src="/fallback.jpg"
+                  alt="Default image"
+                  className="w-full md:h-80 h-60 object-cover rounded-md shadow"
+                />
+              </div>
+            )}
 
-        {/* ✅ Post Description (Server Rendered HTML) */}
-        <div
-          className="text-gray-800 leading-7 prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.description }}
-        />
-      </article>
+            {/* ✅ Post Description (Server Rendered HTML) */}
+            <div
+              className="text-gray-800 leading-7 prose max-w-none"
+              dangerouslySetInnerHTML={{ __html: post.description }}
+            />
+          </article>
+        </>
+      ) : (
+        <p className="mt-3 text-gray-400  ">No Post Found</p>
+      )}
     </div>
   );
 }
