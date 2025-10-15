@@ -30,7 +30,11 @@ const News = ({ post }) => {
             </h3>
             <p className="text-xs text-gray-500 mt-1">
               {item.postedBy?.username} •{" "}
-              {new Date(item.createdAt).toDateString()}
+              {new Date(post.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
             </p>
           </div>
         </Link>

@@ -120,7 +120,11 @@ export default async function Profile() {
                 <div>
                   <p className="text-gray-800">{activity.action}</p>
                   <p className="text-sm text-gray-500">
-                    {new Date(activity.createdAt).toDateString()}
+                    {new Date(post.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </p>
                 </div>
               </li>

@@ -121,10 +121,7 @@ export default async function RootLayout({ children }) {
         />
       </head>
 
-      <body
-        className="bg-white text-black font-sans"
-        suppressHydrationWarning={true}
-      >
+      <body className="bg-white text-black font-sans">
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>
           <Toaster position="top-right" />

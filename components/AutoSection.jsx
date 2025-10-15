@@ -82,7 +82,11 @@ const AutoCarsSection = () => {
                     </h3>
                     <p className="text-xs text-slate-500 mt-1">
                       {post.category} •{" "}
-                      {new Date(post.createdAt).toDateString()}
+                      {new Date(post.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
                     </p>
                   </div>
                 </Link>

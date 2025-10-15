@@ -40,7 +40,11 @@ export default async function Hero({ articles }) {
                 </h2>
                 <p className="text-xs mt-1 text-gray-100">
                   {firstPost.postedBy?.username || "Unknown Author"} •{" "}
-                  {new Date(firstPost.createdAt).toDateString()}
+                  {new Date(firstPost.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </p>
               </div>
             </Link>

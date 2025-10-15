@@ -65,7 +65,11 @@ const ReadMore = () => {
               </Link>
               <p className="text-xs text-gray-500 mt-1">
                 {post.postedBy?.username || "Admin"} •{" "}
-                {new Date(post.createdAt).toDateString()}
+                {new Date(post.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
               </p>
             </div>
           ))}
