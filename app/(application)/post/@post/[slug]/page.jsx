@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import getSingleArticle from "@/lib/actions/getSingleArticle";
-
-export const revalidate = 3600;
+export const dynamic = "force-static";
+export const revalidate = 3600; // revalidate every hour
 
 // ✅ Helper: strip tags & limit text for meta description
 function getPlainText(html = "", maxLen = 160) {
