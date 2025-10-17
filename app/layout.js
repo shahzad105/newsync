@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { auth } from "@/auth";
 import SessionWrapper from "@/components/SessionWrapper";
 import Script from "next/script";
-
+import { Analytics } from "@vercel/analytics/next";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -88,29 +88,6 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <head>
-        {/* ✅ Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-E5FR591D3R"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-E5FR591D3R');
-          `}
-        </Script>
-
-        {/* ✅ Google AdSense */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7195029136262194"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
-        <meta name="google-adsense-account" content="ca-pub-7195029136262194" />
-
         {/* ✅ Responsive Design Meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -126,6 +103,7 @@ export default async function RootLayout({ children }) {
           <SessionWrapper session={session}>{children}</SessionWrapper>
           <Toaster position="top-right" />
         </ReactQueryProvider>
+        <Analytics />
       </body>
     </html>
   );
