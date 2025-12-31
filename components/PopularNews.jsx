@@ -76,7 +76,7 @@ const PopularNews = () => {
                   <p className="text-sm font-medium text-pink-400 uppercase">
                     {post.category}
                   </p>
-                  <Link href={`/post/${post.slug}`}>
+                  <Link href={`/${post.slug}`}>
                     <h2 className="text-sm md:text-base font-bold mt-1 line-clamp-2 cursor-pointer hover:underline">
                       {post.title}
                     </h2>

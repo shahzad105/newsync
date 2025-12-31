@@ -75,7 +75,7 @@ const TechNewsSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 z-10 relative">
               {articles.map((post) => (
                 <Link
-                  href={`/post/${post.slug}`}
+                  href={`/${post.slug}`}
                   key={post._id}
                   className="rounded-bl-2xl rounded-tr-2xl overflow-hidden shadow-md transform hover:scale-[1.01] transition"
                 >

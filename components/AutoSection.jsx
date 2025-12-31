@@ -63,7 +63,7 @@ const AutoCarsSection = () => {
             {articles.length > 0 ? (
               articles.map((post) => (
                 <Link
-                  href={`/post/${post.slug}`}
+                  href={`/${post.slug}`}
                   key={post._id}
                   className="rounded-xl block transition overflow-hidden cursor-pointer p-3"
                 >

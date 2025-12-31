@@ -60,7 +60,7 @@ const BusinessSection = () => {
               <div className="space-y-6 relative z-10">
                 {articles.map((post) => (
                   <Link
-                    href={`/post/${post.slug}`}
+                    href={`/${post.slug}`}
                     key={post._id}
                     className="flex flex-row items-start  gap-4 transition p-1"
                   >

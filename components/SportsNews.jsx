@@ -14,7 +14,7 @@ const SportsNews = async ({ articles }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {articles.slice(0, 2).map((post) => (
             <Link
-              href={`/post/${post.slug}`}
+              href={`/${post.slug}`}
               key={post._id}
               className="rounded-xl overflow-hidden transition hover:shadow-md"
             >
@@ -50,7 +50,7 @@ const SportsNews = async ({ articles }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {articles.slice(2, 6).map((post) => (
             <Link
-              href={`/post/${post.slug}`}
+              href={`/${post.slug}`}
               key={post._id}
               className="flex flex-row items-center gap-4 p-2 rounded-xl transition hover:bg-gray-50 cursor-pointer"
             >

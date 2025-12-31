@@ -17,7 +17,7 @@ export default async function sitemap() {
 
   const posts = await getPostSlugs();
   const postPages = posts.map((post) => ({
-    url: `${baseUrl}/post/${post.slug}`,
+    url: `${baseUrl}/${post.slug}`,
     lastModified: post.updatedAt ? new Date(post.updatedAt).toISOString() : now,
     changeFrequency: "never",
     priority: 0.7,

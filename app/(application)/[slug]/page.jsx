@@ -4,7 +4,6 @@ import getSingleArticle from "@/lib/actions/getSingleArticle";
 export const dynamic = "force-static";
 export const revalidate = 3600; // revalidate every hour
 
-// ✅ Helper: strip tags & limit text for meta description
 function getPlainText(html = "", maxLen = 160) {
   const text = html.replace(/<[^>]+>/g, "");
   return text.length > maxLen

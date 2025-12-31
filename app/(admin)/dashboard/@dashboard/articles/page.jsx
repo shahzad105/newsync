@@ -73,10 +73,7 @@ export default async function ArticlesPage(props) {
                       {a._id.toString()}
                     </td>
                     <td className="px-4 py-3 text-gray-900">
-                      <Link
-                        href={`/post/${a.slug}`}
-                        className="hover:underline"
-                      >
+                      <Link href={`/${a.slug}`} className="hover:underline">
                         {a.title}
                       </Link>
                     </td>

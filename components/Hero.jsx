@@ -21,7 +21,7 @@ export default async function Hero({ articles }) {
           {/* Left - Main Featured Post */}
           {firstPost && (
             <Link
-              href={`/post/${firstPost.slug}`}
+              href={`/${firstPost?.slug}`}
               className=" relative group overflow-hidden rounded-xl shadow-lg md:w-1/2 h-[290px] md:h-[429px] bg-gray-100"
             >
               <Image
@@ -54,7 +54,7 @@ export default async function Hero({ articles }) {
           <div className="md:w-1/2 w-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-2 gap-4">
             {smallPosts.map((post) => (
               <Link
-                href={`/post/${post.slug}`}
+                href={`/${post?.slug}`}
                 key={post._id}
                 className="relative rounded-lg overflow-hidden shadow-md group"
               >

@@ -58,7 +58,7 @@ const ReadMore = () => {
               <p className="text-sm font-medium text-pink-600 uppercase">
                 {post.category}
               </p>
-              <Link href={`/post/${post.slug}`}>
+              <Link href={`/${post.slug}`}>
                 <h3 className="text-base font-medium mt-1 line-clamp-4 cursor-pointer hover:underline">
                   {post.title}
                 </h3>
