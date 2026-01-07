@@ -60,7 +60,7 @@ export const metadata = {
     "TikTok trend USA",
     "viral hashtag USA",
   ],
-  authors: [{ name: "NewSync Team", url: "https://www.newsync.site/about" }],
+
   creator: "NewSync Media",
   publisher: "NewSync",
   openGraph: {

@@ -8,9 +8,16 @@ import {
 import Link from "next/link";
 
 const Footer = () => {
+  const categories = [
+    "Technology",
+    "Apps",
+    "Youth",
+    "Productivity",
+    "Lifestyle",
+  ];
   return (
     <footer className="bg-[#0b2643] text-gray-300 py-10 mt-16">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Logo + About */}
         <div>
           <h2 className="text-xl font-bold tracking-wider text-white mb-4">
@@ -26,63 +33,16 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
           <ul className="space-y-2 text-sm">
-            <li>
-              <Link href="/" className="hover:text-white">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/tech" className="hover:text-white">
-                Tech
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/startups" className="hover:text-white">
-                Startups
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/business" className="hover:text-white">
-                Business
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/auto" className="hover:text-white">
-                Auto
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Categories */}
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-4">Categories</h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <Link href="/category/youth" className="hover:text-white">
-                Youth
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/sports" className="hover:text-white">
-                Sports
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/entertainment" className="hover:text-white">
-                Entertainment
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/policy" className="hover:text-white">
-                Policy
-              </Link>
-            </li>
-            <li>
-              <Link href="/category/finance" className="hover:text-white">
-                Finance
-              </Link>
-            </li>
+            {categories.map((category) => (
+              <li key={category}>
+                <Link
+                  href={`/category/${category}`}
+                  className="hover:text-white"
+                >
+                  {category}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 

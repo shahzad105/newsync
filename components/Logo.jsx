@@ -3,15 +3,13 @@ import Image from "next/image";
 
 const Logo = () => {
   return (
-    <div className="hidden md:flex items-center justify-center pt-4">
-      <Link href="/">
+    <div className="md:flex justify-center items-center hidden">
+      <Link href="/" className="relative h-30 w-full cursor-pointer py-1 ">
         <Image
-          src="/newsync.png"
+          src="/logo.png"
           alt="Newsync Logo"
-          height={52}
-          width={200}
-          className="object-cover !h-14 !w-auto hover:scale-105 transition duration-500 cursor-pointer"
-          priority // optional: preloads logo for performance
+          fill
+          className="object-contain hover:scale-105 transition duration-500"
         />
       </Link>
     </div>

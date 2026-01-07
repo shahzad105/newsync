@@ -19,13 +19,13 @@ export async function generateMetadata({ params }) {
 
   if (!post) {
     return {
-      title: "404 - Post Not Found | NewSync",
+      title: "404 - Post Not Found",
       description: "No article found.",
       robots: { index: false, follow: false },
     };
   }
 
-  const title = `${post.title} | NewSync`;
+  const title = `${post.title}`;
   const description = getPlainText(post.description);
   const url = `${process.env.SITE_URL}/post/${slug}`;
   const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;

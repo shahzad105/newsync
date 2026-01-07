@@ -22,7 +22,7 @@ export async function generateMetadata({ params, searchParams }) {
     data?.articles?.[0]?.image?.url || `${process.env.SITE_URL}/newsync.png`;
 
   // ✅ Meta values
-  const title = `${formattedCategory} News - Page ${pageNum} | NewSync`;
+  const title = `${formattedCategory} News - Page ${pageNum} `;
   const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum}.`;
 
   // ✅ Canonical URL (no ?page=1)

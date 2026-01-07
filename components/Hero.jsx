@@ -1,15 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-
-// ✅ Dynamic Metadata for Hero Section
-
 export default async function Hero({ articles }) {
   if (!articles) {
-    return (
-      <div className="py-12 text-center text-red-600">
-        Failed to load articles.
-      </div>
-    );
+    return null;
   }
 
   const [firstPost, ...smallPosts] = articles;
@@ -22,22 +15,22 @@ export default async function Hero({ articles }) {
           {firstPost && (
             <Link
               href={`/${firstPost?.slug}`}
-              className=" relative group overflow-hidden rounded-xl shadow-lg md:w-1/2 h-[290px] md:h-[429px] bg-gray-100"
+              className=" relative group overflow-hidden rounded-xl shadow-lg md:w-1/2 h-[230px] md:h-[429px] bg-gray-100"
             >
               <Image
                 src={firstPost.image?.url || "/newsync.png"}
                 alt={firstPost.title}
                 fill
-                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                className="object-cover group-hover:scale-105 transition duration-500"
                 priority
               />
               <div className="absolute p-4 bottom-0 left-0 w-full px-4 bg-gradient-to-tr from-black/50 to-black/0 text-white">
                 <p className="text-sm font-medium text-pink-600 uppercase">
                   {firstPost.category}
                 </p>
-                <h2 className="text-xl leading-7 md:text-2xl font-bold mt-1 line-clamp-3 md:line-clamp-none hover:underline">
+                <h1 className="text-xl leading-7 md:text-2xl font-bold mt-1 line-clamp-3 md:line-clamp-none hover:underline">
                   {firstPost.title}
-                </h2>
+                </h1>
                 <p className="text-xs mt-1 text-gray-100">
                   {firstPost.postedBy?.username || "Unknown Author"} •{" "}
                   {new Date(firstPost.createdAt).toLocaleDateString("en-US", {
@@ -69,9 +62,9 @@ export default async function Hero({ articles }) {
                   <p className="text-xs font-semibold text-pink-600 uppercase tracking-wide">
                     {post.category}
                   </p>
-                  <p className="text-sm font-medium line-clamp-2 hover:underline">
+                  <h1 className="text-sm font-medium line-clamp-2 hover:underline">
                     {post.title}
-                  </p>
+                  </h1>
                 </div>
               </Link>
             ))}

@@ -63,15 +63,16 @@ const PopularNews = () => {
             articles.map((post) => (
               <div
                 key={post._id}
-                className="flex items-center gap-3 border-b border-gray-200 py-3"
+                className="flex items-center gap-3 border-b border-gray-200 py-3 "
               >
-                <Image
-                  src={post.image?.url || "/default.jpg"}
-                  alt="Post thumbnail"
-                  width={72}
-                  height={72}
-                  className="!w-18 !h-18 object-cover rounded-full"
-                />
+                <div className="relative w-18 h-18 flex-shrink-0">
+                  <Image
+                    src={post.image?.url || "/default.jpg"}
+                    alt="Post thumbnail"
+                    fill
+                    className="object-cover rounded-full"
+                  />
+                </div>
                 <div>
                   <p className="text-sm font-medium text-pink-400 uppercase">
                     {post.category}

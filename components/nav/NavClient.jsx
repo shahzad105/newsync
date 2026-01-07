@@ -54,15 +54,9 @@ const NavClient = ({ user }) => {
 
       <div
         onClick={() => router.push("/")}
-        className="md:hidden  cursor-pointer"
+        className="md:hidden relative w-full h-10 cursor-pointer"
       >
-        <Image
-          src="/logo5.png"
-          alt="Logo"
-          width={70}
-          height={50}
-          className="object-cover !h-[25px] !w-full"
-        />
+        <Image src="/logo.png" alt="Logo" fill className="object-contain" />
       </div>
       <div className=" flex items-center gap-2 relative text-white">
         {user && (

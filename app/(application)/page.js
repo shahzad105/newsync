@@ -1,5 +1,5 @@
 import Hero from "@/components/Hero";
-import BusinessAutoLayout from "@/layouts/BusinessAuto";
+
 import LatestReadmore from "@/layouts/LatestReadMore";
 import NewsSectionLayout from "@/layouts/TechPopular";
 import { fetchArticles } from "@/lib/fetchArticles";
@@ -26,7 +26,6 @@ export default async function HomePage() {
         <Hero articles={heroArticles?.articles} />
       </Suspense>
       <NewsSectionLayout sportsArticles={sportsArticles?.articles} />
-      <BusinessAutoLayout />
       <LatestReadmore latestArtocles={latestArticles?.articles} />
     </>
   );

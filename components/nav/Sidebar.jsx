@@ -7,20 +7,17 @@ import { useRouter } from "next/navigation";
 import LogoutButton from "../HandleLogout";
 
 const categories = [
-  "Tech",
+  "Technology",
   "Startups",
   "Youth",
-  "Innovation",
-  "Business",
-  "Finance",
-  "Sports",
-  "Entertainment",
+  "Lifestyle",
+  "Productivity",
+  "Freelancing",
+  "Blockchain",
 ];
 
 export default function Sidebar({ user, menuOpen, setMenuOpen }) {
   const router = useRouter();
-
-
 
   return (
     <>
@@ -37,9 +34,9 @@ export default function Sidebar({ user, menuOpen, setMenuOpen }) {
             <div>
               <div className="mb-8 flex items-center justify-between">
                 <Link href="/" onClick={() => setMenuOpen(false)}>
-                  <div className="text-2xl font-bold text-[#0b2643] flex items-center gap-2">
-                    <IoCubeOutline size={24} />
-                    <span>Newsync</span>
+                  <div className="text-2xl font-bold  flex items-center gap-2">
+                    <IoCubeOutline size={24} className="text-blue-800" />
+                    <span className="text-blue-800">NewSync</span>
                   </div>
                 </Link>
                 <IoClose
@@ -87,7 +84,7 @@ export default function Sidebar({ user, menuOpen, setMenuOpen }) {
                   Login
                 </Link>
               ) : (
-              <LogoutButton></LogoutButton>
+                <LogoutButton></LogoutButton>
               )}
             </div>
           </aside>

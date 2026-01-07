@@ -4,14 +4,13 @@ import NavClient from "./NavClient";
 import { auth } from "@/auth"; // make sure this path is correct
 
 const categories = [
-  "Tech",
+  "Technology",
   "Startups",
   "Youth",
-  "Innovation",
-  "Business",
-  "Finance",
-  "Sports",
-  "Entertainment",
+  "Lifestyle",
+  "Productivity",
+  "Freelancing",
+  "Blockchain",
 ];
 
 const Navbar = async () => {
@@ -19,7 +18,7 @@ const Navbar = async () => {
   const user = session?.user;
 
   return (
-    <div className="bg-[#0b2643] text-white px-4 md:px-10  md:flex items-center justify-between sticky top-0 z-50 py-2 md:mt-1">
+    <div className="bg-[#0b2643] text-white px-4 md:px-10  md:flex items-center justify-between sticky top-0 z-50 py-2 ">
       <nav className="hidden md:block">
         <ul className="flex items-center gap-4 lg:gap-6">
           {categories.map((category) => (
