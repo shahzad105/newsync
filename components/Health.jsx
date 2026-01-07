@@ -2,13 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 
-const FreeLancing = ({ articles = [] }) => {
+const Health = ({ articles = [] }) => {
   return (
     <>
       {articles.length > 0 && (
         <div className="py-8">
           <h2 className="mb-6 p-1 text-2xl font-bold tracking-tight text-sky-800 whitespace-nowrap underline underline-offset-10 decoration-red-600 decoration-4">
-            Freelancing
+            Health & Fitness
           </h2>
 
           <div className="grid grid-cols-1 gap-6">
@@ -92,4 +92,4 @@ const FreeLancing = ({ articles = [] }) => {
   );
 };
 
-export default FreeLancing;
+export default Health;

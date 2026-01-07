@@ -3,14 +3,15 @@ import PopularNews from "@/components/PopularNews";
 import TechNewsSection from "@/components/TechNewsSection";
 import SportsNewsSkeleton from "@/skeletons/SportsNewsSkeleton";
 import { Suspense } from "react";
-import FreeLancing from "@/components/Freelancing";
-const NewsSectionLayout = ({ sportsArticles }) => {
+
+import Health from "@/components/Health";
+const TechLifestyleLayout = ({ lifeStyleArticles }) => {
   return (
     <div className="flex flex-col md:flex-row gap-8">
       <main className="md:w-3/4 w-full space-y-6">
         <TechNewsSection />
         <Suspense fallback={<SportsNewsSkeleton />}>
-          <FreeLancing articles={sportsArticles} />
+          <Health articles={lifeStyleArticles} />
         </Suspense>
       </main>
 
@@ -21,4 +22,4 @@ const NewsSectionLayout = ({ sportsArticles }) => {
   );
 };
 
-export default NewsSectionLayout;
+export default TechLifestyleLayout;

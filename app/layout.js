@@ -21,45 +21,7 @@ export const metadata = {
     template: "%s | NewSync",
   },
   description:
-    "Stay updated with the latest trending stories from Pakistan, the USA, and around the world. Explore viral news, tech, startups, sports, and more — all tailored for you.",
-  keywords: [
-    // 🌍 General & Viral
-    "breaking viral update",
-    "daily viral roundup",
-    "viral media trend",
-    "digital youth culture",
-    "social media moment",
-    "viral hashtag",
-    "gen z lifestyle trend",
-    "innovation roundup",
-
-    // 🇵🇰 Pakistan Focus
-    "Pakistan trending now",
-    "Pakistan viral news",
-    "youthtech Pakistan",
-    "startup spotlight PK",
-    "tech disruption Pakistan",
-    "sports viral highlight PK",
-    "business buzz Pakistan",
-    "tech startup funding PK",
-    "Pakistan news",
-    "latest news Pakistan",
-
-    // 🇺🇸 US Focus
-    "US trending now",
-    "breaking viral update USA",
-    "youthtech USA",
-    "startup spotlight US",
-    "tech disruption USA",
-    "sports viral highlight US",
-    "business buzz USA",
-    "daily viral roundup US",
-    "next-gen business USA",
-    "AI news breakthrough USA",
-    "crypto startup USA",
-    "TikTok trend USA",
-    "viral hashtag USA",
-  ],
+    "Stay updated with the latest trending stories from Pakistan, the USA, and around the world. ",
 
   creator: "NewSync Media",
   publisher: "NewSync",
@@ -83,8 +45,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "NewSync - Your News, Your Way",
-    description:
-      "Stay updated with the latest viral news, youth trends, and global highlights — Pakistan 🇵🇰 & USA 🇺🇸 editions.",
+    description: "Get amazing blog posts delivered straight to your inbox.",
     creator: "@newsync",
     images: ["https://www.newsync.site/newsync.png"],
   },
