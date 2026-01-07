@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
   const description = getPlainText(post.description);
   const url = `${process.env.SITE_URL}/post/${slug}`;
   const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;
-
+  console.log(post, description);
   return {
     title,
     description,
@@ -124,7 +124,7 @@ export default async function PostPage({ params }) {
 
       {/* ✅ Article Body */}
       <div
-        className="prose prose-lg max-w-none text-gray-800 leading-7"
+        className="prose max-w-none"
         dangerouslySetInnerHTML={{ __html: post.description }}
       />
     </article>

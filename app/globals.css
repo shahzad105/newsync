@@ -58,6 +58,112 @@
   .animate-slide-in {
     animation: slideIn 0.3s ease-out both;
   }
+  .prose {
+    color: #1f2937; /* slate-800 */
+    line-height: 1.75;
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .prose h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .prose h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  /* Paragraphs */
+  .prose p {
+    font-family: "Inter", sans-serif;
+    font-size: 1.05rem;
+
+    color: #374151; /* slate-700 */
+  }
+
+  /* Bold & Italic */
+  .prose strong {
+    font-weight: 600;
+  }
+
+  .prose em {
+    font-style: italic;
+  }
+
+  /* Links */
+  .prose a {
+    color: #2563eb; /* blue-600 */
+    text-decoration: underline;
+    font-weight: 500;
+  }
+
+  .prose a:hover {
+    color: #1d4ed8;
+  }
+
+  /* Lists */
+  .prose ul {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    list-style-type: disc;
+  }
+
+  .prose ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    list-style-type: decimal;
+  }
+
+  .prose li {
+    font-family: "Inter", sans-serif;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Blockquote */
+  .prose blockquote {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #4b5563;
+  }
+
+  /* Code */
+  .prose code {
+    background-color: #f3f4f6;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: monospace;
+  }
+
+  .prose pre {
+    background-color: #111827;
+    color: #e5e7eb;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  /* Images */
+  .prose img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+
+  /* Horizontal Rule */
+  .prose hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 2rem 0;
+  }
 }
 .custom-editor .ql-editor {
   min-height: 200px;
