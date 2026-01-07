@@ -13,7 +13,7 @@ const TechNewsSection = () => {
   const [page, setPage] = useState(1);
 
   const { data, isError, isLoading, isFetching } = useGetArticles({
-    category: "Tech",
+    category: "technology",
     page,
     limit: 3,
     latest: true,
