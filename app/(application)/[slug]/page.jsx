@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
 
   const title = `${post.title}`;
   const description = getPlainText(post.description);
-  const url = `${process.env.SITE_URL}/post/${slug}`;
+  const url = `${process.env.SITE_URL}/${slug}`;
   const image = post.image?.url || `${process.env.SITE_URL}/newsync.png`;
   console.log(post, description);
   return {
