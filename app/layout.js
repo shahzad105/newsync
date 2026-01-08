@@ -76,17 +76,6 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" className={poppins.variable}>
-      <head>
-        {/* ✅ Responsive Design Meta */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-        {/* ✅ Extra Fallback for keywords (in case Next.js strips array) */}
-        <meta
-          name="keywords"
-          content="breaking viral update, daily viral roundup, Pakistan trending now, US trending now, startup news, tech news, sports viral highlight, business buzz, youth trends, viral media trend, TikTok trend USA, innovation roundup"
-        />
-      </head>
-
       <body className="bg-white text-black font-sans">
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>
