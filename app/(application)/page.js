@@ -9,17 +9,14 @@ import HeroSkeleton from "@/skeletons/HeroSkeleton";
 import { Suspense } from "react";
 
 export default async function HomePage() {
-  const heroCategories = "Business,International,Health,Innovation";
+  const heroCategories = "careers,startups,apps,youth";
   const lifestyleCategories = "lifestyle";
 
-  // ✅ Fetch all articles in parallel
   const [heroArticles, lifestyleArticles, latestArticles] = await Promise.all([
     fetchArticles(heroCategories, 5),
     fetchArticles(lifestyleCategories, 6),
     fetchArticles("All", 6),
   ]);
-
-  const articles = heroArticles?.articles || [];
 
   return (
     <>
