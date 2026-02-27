@@ -106,9 +106,7 @@ export default async function HomePage() {
         </Suspense>
 
         <Suspense fallback={null}>
-          <LatestReadmore
-            latestArticles={latestArticles?.articles} // ✅ Fixed typo: latestArtocles → latestArticles
-          />
+          <LatestReadmore latestArticles={latestArticles?.articles} />
         </Suspense>
       </main>
     </>
