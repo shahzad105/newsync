@@ -5,14 +5,32 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/_next/", "/static/"], // explicitly allow Next.js assets
-        disallow: ["/dashboard/", "/profile/"], // block private sections
+        allow: "/",
+        disallow: ["/dashboard/", "/profile/", "/api/", "/admin/", "/_next/"],
+      },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: ["/dashboard/", "/profile/", "/api/", "/admin/"],
       },
       {
         userAgent: "Googlebot-Image",
-        allow: ["/", "/_next/image"], // allow all images including optimized ones
+        allow: "/",
+      },
+      {
+        userAgent: "GPTBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "Claude-Web",
+        disallow: "/",
+      },
+      {
+        userAgent: "CCBot",
+        disallow: "/",
       },
     ],
     sitemap: "https://www.newsync.site/sitemap.xml",
+    host: "https://www.newsync.site",
   };
 }

@@ -6,57 +6,79 @@ import { auth } from "@/auth";
 import SessionWrapper from "@/components/SessionWrapper";
 import { Analytics } from "@vercel/analytics/next";
 
-// ✅ Font
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
 });
 
-// ✅ SEO Metadata
 export const metadata = {
-  metadataBase: new URL("https://www.newsync.site"),
+  metadataBase: new URL("https://www.newsync.site/"),
+
   title: {
-    default: "NewSync - Your News, Your Way",
+    default: "NewSync - Trending Blogs from Pakistan, USA & World",
     template: "%s | NewSync",
   },
-  description:
-    "Stay updated with the latest trending stories from Pakistan, the USA, and around the world. ",
 
+  description:
+    "Explore trending blog posts on technology, lifestyle, startups, and global stories from Pakistan, the USA, and around the world. Read, discover, and stay informed with NewSync.",
+
+  keywords: [
+    "blog",
+    "trending blogs",
+    "Pakistan blogs",
+    "USA blogs",
+    "technology blog",
+    "lifestyle blog",
+    "startup stories",
+    "world stories",
+    "NewSync blog",
+  ],
+
+  authors: [{ name: "NewSync Media", url: "https://www.newsync.site" }],
   creator: "NewSync Media",
   publisher: "NewSync",
+  category: "blog",
+
   openGraph: {
-    title: "NewSync - Your News, Your Way",
+    title: "NewSync - Trending Blogs from Pakistan, USA & World",
     description:
-      "Get the latest viral news, startup updates, and trending stories from Pakistan, the USA, and beyond — tailored to your interests.",
-    url: "https://www.newsync.site",
+      "Explore trending blog posts on technology, lifestyle, startups, and global stories — tailored to your interests on NewSync.",
+    url: "https://www.newsync.site/",
     siteName: "NewSync",
     images: [
       {
-        url: "https://www.newsync.site/og-image.jpg",
+        url: "https://www.newsync.site/logo.png",
         width: 1200,
         height: 630,
-        alt: "NewSync - Latest News and Viral Updates",
+        alt: "NewSync - Trending Blogs from Pakistan, USA and the World",
       },
     ],
     locale: "en_US",
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "NewSync - Your News, Your Way",
-    description: "Get amazing blog posts delivered straight to your inbox.",
+    title: "NewSync - Trending Blogs from Pakistan, USA & World",
+    description:
+      "Explore trending blog posts on tech, lifestyle, startups, and global stories — all in one place on NewSync.",
     creator: "@newsync",
-    images: ["https://www.newsync.site/newsync.png"],
+    images: ["https://www.newsync.site/og-image.jpg"],
   },
+
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
+
   manifest: "/site.webmanifest",
+
   alternates: {
-    canonical: "https://www.newsync.site",
+    canonical: "https://www.newsync.site/",
   },
+
   robots: {
     index: true,
     follow: true,
@@ -70,12 +92,15 @@ export const metadata = {
   },
 };
 
-// ✅ Root Layout Component
 export default async function RootLayout({ children }) {
   const session = await auth();
 
   return (
     <html lang="en" className={poppins.variable}>
+      <head>
+        {/* Bing Webmaster Verification */}
+        <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" />
+      </head>
       <body className="bg-white text-black font-sans">
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>
