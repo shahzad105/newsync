@@ -39,51 +39,69 @@ export async function generateStaticParams() {
 
 // ✅ SEO Metadata
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
-  const res = await getSingleArticle(slug);
-  const post = res?.data;
+  const post = await getPostBySlug(params.slug);
+  if (!post) return {};
 
-  if (!post) {
-    return {
-      title: "Post Not Found",
-      description: "The article you are looking for does not exist.",
-      robots: { index: false, follow: false },
-    };
-  }
+  const url = `${process.env.SITE_URL}/${post.slug}`;
+  const imageUrl = post.image?.url || `${process.env.SITE_URL}/og-image.jpg`;
 
-  const title = post.title;
-  const description = getPlainText(post.description);
-  const url = `${SITE_URL}/${slug}`;
-  const image = post.image?.url || `${SITE_URL}/og-image.jpg`;
+  const keywords = [
+    post.category,
+    ...post.title
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, "")
+      .split(" ")
+      .filter((w) => w.length > 3)
+      .slice(0, 8),
+    "newsync",
+    "blog",
+    "pakistan",
+  ].join(", ");
+
+  const seoTitle =
+    post.title.length > 55 ? post.title.slice(0, 52) + "..." : post.title;
 
   return {
-    title,
-    description,
-    keywords: post.tags || [],
-    authors: [{ name: post.postedBy?.username || "NewSync Media" }],
-    alternates: { canonical: url },
+    title: seoTitle, // ✅ under 60 chars
+    description: post.description?.slice(0, 155) || post.title,
+    keywords,
+
+    authors: [{ name: post.postedBy?.username || "NewSync" }],
+    creator: "NewSync",
+    publisher: "NewSync",
+
     openGraph: {
-      title,
-      description,
-      url,
+      title: post.title, // OG can be longer
+      description: post.description?.slice(0, 155),
+      url, // ✅ full URL
       siteName: "NewSync",
       type: "article",
       publishedTime: post.createdAt,
       modifiedTime: post.updatedAt,
-      authors: [post.postedBy?.username || "NewSync Media"],
-      images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+      authors: [post.postedBy?.username || "NewSync"],
+      images: [
+        {
+          url: imageUrl, // ✅ full Cloudinary URL
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
     },
+
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
-      images: [image],
+      title: post.title,
+      description: post.description?.slice(0, 155),
+      images: [imageUrl], // ✅ full URL
       creator: "@newsync",
     },
-    robots: { index: true, follow: true },
+
+    alternates: {
+      canonical: url, // ✅ full canonical URL
+    },
   };
 }
-
 // ✅ Main Page Component
 export default async function PostPage({ params }) {
   const { slug } = await params;
@@ -219,7 +237,6 @@ export default async function PostPage({ params }) {
                 }}
               />
 
-              {/* Category badge on image */}
               {post.category && (
                 <div
                   style={{
