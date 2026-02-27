@@ -34,7 +34,7 @@ const Navbar = async () => {
           ))}
         </ul>
       </nav>
-      <NavClient user={user} />
+      <NavClient />
     </div>
   );
 };

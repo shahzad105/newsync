@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaBookReader, FaSearch, FaUser } from "react-icons/fa";
@@ -9,7 +10,11 @@ import Sidebar from "./Sidebar";
 import Link from "next/link";
 import LogoutButton from "../HandleLogout";
 
-const NavClient = ({ user }) => {
+const NavClient = () => {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === "loading";
+
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -24,7 +29,8 @@ const NavClient = ({ user }) => {
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!searchRef.current?.contains(e.target)) setShowSearch(false);
-      if (!profileRef.current?.contains(e.target)) setShowProfileDropdown(false);
+      if (!profileRef.current?.contains(e.target))
+        setShowProfileDropdown(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -42,16 +48,15 @@ const NavClient = ({ user }) => {
 
   return (
     <nav
-      className="flex items-center justify-between relative z-50 md:block"
       role="navigation"
-      aria-label="Main navigation"  // ✅ Accessibility + SEO
+      aria-label="Main navigation"
+      className="flex items-center justify-between relative z-50 md:block"
     >
-
       {/* ── Mobile Hamburger ── */}
       <button
         onClick={() => setMenuOpen(true)}
         className="md:hidden text-white p-1"
-        aria-label="Open navigation menu"  // ✅ Screen reader friendly
+        aria-label="Open navigation menu"
       >
         <FiMenu size={22} />
       </button>
@@ -60,33 +65,39 @@ const NavClient = ({ user }) => {
       <div
         onClick={() => router.push("/")}
         className="md:hidden cursor-pointer"
-        role="link"
-        aria-label="Go to homepage"
       >
-        {/* ✅ Fixed: fill removed — explicit width and height */}
         <Image
           src="/logo.png"
-          alt="NewSync - Trending Blogs"  // ✅ SEO descriptive alt
+          alt="NewSync - Trending Blogs"
           width={120}
           height={36}
-          priority                         // ✅ Above fold — load immediately
-          className="object-contain hover:opacity-90 transition duration-300"
+          priority
+          className="object-contain"
         />
       </div>
 
       {/* ── Right Side Actions ── */}
       <div className="flex items-center gap-2 relative text-white">
-
-        {/* ── User Avatar + Dropdown ── */}
-        {user && (
+        {/* ✅ Show skeleton while session is loading — no flicker */}
+        {isLoading ? (
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.15)",
+              animation: "pulse 1.5s ease-in-out infinite",
+            }}
+          />
+        ) : user ? (
+          // ── Logged In — Show Avatar ──
           <div ref={profileRef} className="relative">
             <button
               onClick={toggleProfile}
-              aria-label="Open profile menu"           // ✅ Accessibility
-              aria-expanded={showProfileDropdown}      // ✅ ARIA state
-              className="relative w-8 h-8 rounded-full bg-blue-500 cursor-pointer overflow-hidden focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              aria-label="Open profile menu"
+              aria-expanded={showProfileDropdown}
+              className="relative w-8 h-8 rounded-full overflow-hidden focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
-              {/* ✅ Fixed: fill removed — explicit size */}
               <Image
                 src={user.avatar?.url || "/user.png"}
                 alt={`${user.name || "User"} avatar`}
@@ -96,26 +107,31 @@ const NavClient = ({ user }) => {
               />
             </button>
 
-            {/* Profile Dropdown */}
             {showProfileDropdown && (
               <div
-                role="menu"                            // ✅ Accessibility
-                aria-label="Profile options"
+                role="menu"
                 className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl z-50 text-sm border border-gray-100 overflow-hidden animate-fade-up"
-                style={{ boxShadow: "var(--shadow-hover)" }}
               >
-                {/* User info header */}
+                {/* User info */}
                 <div
                   style={{
                     padding: "0.75rem 1rem",
                     borderBottom: "1px solid #f1f5f9",
-                    background: "linear-gradient(135deg, rgba(232,93,38,0.05), rgba(29,53,87,0.03))",
                   }}
                 >
-                  <p style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1a1a1a", margin: 0 }}>
+                  <p
+                    style={{
+                      fontSize: "0.8rem",
+                      fontWeight: 700,
+                      color: "#1a1a1a",
+                      margin: 0,
+                    }}
+                  >
                     {user.name || user.username || "My Account"}
                   </p>
-                  <p style={{ fontSize: "0.72rem", color: "#94a3b8", margin: 0 }}>
+                  <p
+                    style={{ fontSize: "0.72rem", color: "#94a3b8", margin: 0 }}
+                  >
                     {user.email || ""}
                   </p>
                 </div>
@@ -146,22 +162,18 @@ const NavClient = ({ user }) => {
               </div>
             )}
           </div>
-        )}
-
-        {/* ── Login Button (when no user) ── */}
-        {!user && (
+        ) : (
+          // ── Logged Out — Show Login Button ──
           <Link
             href="/auth/login"
             style={{
               fontSize: "0.8rem",
               fontWeight: 600,
               color: "#fff",
-              background: "var(--color-accent, #e85d26)",
+              background: "#e85d26",
               padding: "0.35rem 0.9rem",
               borderRadius: "99px",
               textDecoration: "none",
-              fontFamily: "var(--font-ui, sans-serif)",
-              transition: "opacity 0.2s",
             }}
           >
             Login
@@ -171,61 +183,62 @@ const NavClient = ({ user }) => {
         {/* ── Search Button ── */}
         <button
           onClick={toggleSearch}
-          aria-label="Search articles"           // ✅ Accessibility
-          aria-expanded={showSearch}             // ✅ ARIA state
+          aria-label="Search articles"
+          aria-expanded={showSearch}
           className="p-2 rounded-full hover:bg-white/10 transition"
         >
           <FaSearch size={17} className="text-white" />
         </button>
 
-        {/* ── Search Dropdown ── */}
         {showSearch && (
           <div
             ref={searchRef}
-            role="search"                        // ✅ Semantic search role
+            role="search"
             className="absolute right-0 top-12 z-50 w-80 bg-white rounded-2xl shadow-2xl p-3 animate-slide-in-right"
-            style={{ boxShadow: "var(--shadow-hover)" }}
           >
             <form onSubmit={handleSearch} className="flex items-center gap-2">
               <input
-                type="search"                    // ✅ type="search" not "text"
+                type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search blogs, topics..."
-                aria-label="Search articles"     // ✅ Accessibility
-                autoFocus                        // ✅ Focus immediately on open
-                className="flex-1 px-4 py-2.5 text-sm text-gray-800 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent"
-                style={{ "--tw-ring-color": "#e85d26" }}
+                aria-label="Search articles"
+                autoFocus
+                className="flex-1 px-4 py-2.5 text-sm text-gray-800 border border-gray-200 rounded-xl focus:outline-none focus:ring-2"
               />
               <button
                 type="submit"
-                aria-label="Submit search"
                 style={{
                   padding: "0.5rem 0.9rem",
                   fontSize: "0.85rem",
                   fontWeight: 600,
                   color: "#fff",
-                  background: "var(--color-accent, #e85d26)",
+                  background: "#e85d26",
                   borderRadius: "10px",
                   border: "none",
                   cursor: "pointer",
-                  transition: "opacity 0.2s",
-                  whiteSpace: "nowrap",
                 }}
               >
                 Go
               </button>
             </form>
 
-            {/* ✅ Quick search suggestions */}
-            <div style={{ marginTop: "0.6rem", display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+            <div
+              style={{
+                marginTop: "0.6rem",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.4rem",
+              }}
+            >
               {["AI", "Freelancing", "Startups", "Productivity"].map((tag) => (
                 <button
                   key={tag}
                   onClick={() => {
-                    router.push(`/search/${encodeURIComponent(tag.toLowerCase())}`);
+                    router.push(
+                      `/search/${encodeURIComponent(tag.toLowerCase())}`,
+                    );
                     setShowSearch(false);
-                    setQuery("");
                   }}
                   style={{
                     fontSize: "0.7rem",
@@ -236,8 +249,6 @@ const NavClient = ({ user }) => {
                     background: "#fafaf8",
                     color: "#64748b",
                     cursor: "pointer",
-                    transition: "all 0.15s",
-                    fontFamily: "var(--font-ui, sans-serif)",
                   }}
                 >
                   {tag}
@@ -248,7 +259,6 @@ const NavClient = ({ user }) => {
         )}
       </div>
 
-      {/* ── Mobile Sidebar ── */}
       <Sidebar user={user} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
     </nav>
   );

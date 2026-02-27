@@ -4,9 +4,8 @@ import { redirect } from "next/navigation";
 export default async function Layout({ dashboard, sidebar, children }) {
   const session = await auth();
 
-  // If no session or not admin, show nothing or redirect
   if (!session?.user?.isAdmin) {
-    return redirect("/"); // or you can redirect with `redirect("/auth/login")`
+    return redirect("/");
   }
 
   return (

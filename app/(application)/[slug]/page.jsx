@@ -3,13 +3,10 @@ import Image from "next/image";
 import getSingleArticle from "@/lib/actions/getSingleArticle";
 import { getPostSlugs } from "@/lib/actions/getSlugs";
 import ShareButtons from "@/components/ShareButton";
-
 export const dynamic = "force-static";
 export const revalidate = 3600;
-
 const SITE_URL = process.env.SITE_URL || "https://www.newsync.site";
 
-// ✅ Strips HTML + decodes entities
 function getPlainText(html = "", maxLen = 160) {
   const text = html
     .replace(/<[^>]+>/g, "")
@@ -30,7 +27,6 @@ function getReadingTime(html = "") {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-// ✅ Pre-render all posts at build time
 export async function generateStaticParams() {
   try {
     const posts = await getPostSlugs();
@@ -195,10 +191,7 @@ export default async function PostPage({ params }) {
       />
 
       <main>
-        <article>
-          {/* ================================================
-              HERO SECTION — Full-width image with overlay
-          ================================================ */}
+        <article className="pt-8">
           {post.image?.url && (
             <div
               style={{
