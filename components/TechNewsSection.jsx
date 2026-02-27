@@ -16,7 +16,7 @@ const TechNewsSection = () => {
     limit: 3,
     latest: true,
   });
-
+  console.log("TechNewsSection data:", data);
   const articles = data?.articles || [];
   const totalPages = data?.totalPages || 1;
 

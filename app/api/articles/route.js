@@ -54,7 +54,7 @@ export async function GET(req) {
   } catch (error) {
     return Response.json(
       { success: false, message: "Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
