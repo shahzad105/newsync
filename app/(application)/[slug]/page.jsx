@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 const SITE_URL = process.env.SITE_URL || "https://www.newsync.site";
 
-// ✅ Strips HTML tags AND decodes common HTML entities
+// ✅ Strips HTML + decodes entities
 function getPlainText(html = "", maxLen = 160) {
   const text = html
     .replace(/<[^>]+>/g, "")
@@ -22,7 +22,14 @@ function getPlainText(html = "", maxLen = 160) {
   return text.length > maxLen ? text.slice(0, maxLen).trim() + "…" : text;
 }
 
-// ✅ Pre-render all blog posts at build time (required for force-static)
+// ✅ Reading time estimator
+function getReadingTime(html = "") {
+  const text = html.replace(/<[^>]+>/g, "");
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+// ✅ Pre-render all posts at build time
 export async function generateStaticParams() {
   try {
     const posts = await getPostSlugs();
@@ -50,12 +57,12 @@ export async function generateMetadata({ params }) {
   const title = post.title;
   const description = getPlainText(post.description);
   const url = `${SITE_URL}/${slug}`;
-  const image = post.image?.url || `${SITE_URL}/logo.png`;
+  const image = post.image?.url || `${SITE_URL}/og-image.jpg`;
 
   return {
-    title, // layout.js template will append "| NewSync"
+    title,
     description,
-    keywords: post.tags || [], // ✅ Add tags as keywords if your post has them
+    keywords: post.tags || [],
     authors: [{ name: post.postedBy?.username || "NewSync Media" }],
     alternates: { canonical: url },
     openGraph: {
@@ -64,8 +71,8 @@ export async function generateMetadata({ params }) {
       url,
       siteName: "NewSync",
       type: "article",
-      publishedTime: post.createdAt, // ✅ Important for article type
-      modifiedTime: post.updatedAt, // ✅ Important for article type
+      publishedTime: post.createdAt,
+      modifiedTime: post.updatedAt,
       authors: [post.postedBy?.username || "NewSync Media"],
       images: [{ url: image, width: 1200, height: 630, alt: post.title }],
     },
@@ -74,7 +81,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       images: [image],
-      creator: "@newsync", // ✅ Fixed: was @NewSync (case sensitive)
+      creator: "@newsync",
     },
     robots: { index: true, follow: true },
   };
@@ -86,18 +93,30 @@ export default async function PostPage({ params }) {
   const res = await getSingleArticle(slug);
   const post = res?.data;
 
+  // ---- 404 State ----
   if (!post) {
     return (
-      <section className="px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold mb-2">404 - Post Not Found</h1>
-        <p className="text-gray-600">
+      <section className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-20 text-center">
+        <span
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "6rem",
+            fontWeight: 900,
+            lineHeight: 1,
+            background: "linear-gradient(135deg, #e85d26, #1d3557)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          404
+        </span>
+        <h1 className="text-2xl font-bold mt-4 mb-2">Post Not Found</h1>
+        <p className="text-gray-500 mb-8 max-w-md">
           The article you're looking for doesn't exist or has been removed.
         </p>
-        <Link
-          href="/"
-          className="inline-block mt-4 text-blue-600 hover:underline"
-        >
-          Go back home
+        <Link href="/" className="btn-primary">
+          ← Back to Home
         </Link>
       </section>
     );
@@ -106,23 +125,24 @@ export default async function PostPage({ params }) {
   const url = `${SITE_URL}/${slug}`;
   const image = post.image?.url || `${SITE_URL}/og-image.jpg`;
   const description = getPlainText(post.description);
+  const readingTime = getReadingTime(post.description);
+  const publishDate = new Date(post.createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
-  // ✅ JSON-LD BlogPosting Schema — most important thing for blog post indexing
+  // ---- JSON-LD: BlogPosting ----
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     "@id": url,
     headline: post.title,
-    description: description,
-    url: url,
+    description,
+    url,
     datePublished: post.createdAt,
     dateModified: post.updatedAt || post.createdAt,
-    image: {
-      "@type": "ImageObject",
-      url: image,
-      width: 1200,
-      height: 630,
-    },
+    image: { "@type": "ImageObject", url: image, width: 1200, height: 630 },
     author: {
       "@type": "Person",
       name: post.postedBy?.username || "NewSync Media",
@@ -136,34 +156,19 @@ export default async function PostPage({ params }) {
         url: `${SITE_URL}/og-image.jpg`,
       },
     },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": url,
-    },
-    // ✅ Add if your posts have tags/categories
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
     ...(post.tags?.length && { keywords: post.tags.join(", ") }),
   };
 
-  // ✅ Breadcrumb Schema — enables breadcrumb rich results in Google
+  // ---- JSON-LD: Breadcrumb ----
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: SITE_URL,
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
       {
         "@type": "ListItem",
         position: 2,
-        name: "Articles",
-        item: `${SITE_URL}/`, // ✅ Fixed: points to home since you have no /blog route
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: post.title,
         item: url,
       },
@@ -172,6 +177,7 @@ export default async function PostPage({ params }) {
 
   return (
     <>
+      {/* ---- Structured Data ---- */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -181,53 +187,453 @@ export default async function PostPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      <article className="max-w-4xl mx-auto md:px-4 md:py-10 px-3 py-6">
-        {/* ✅ Breadcrumb Nav — Fixed: removed /blog link since that route doesn't exist */}
-        <nav aria-label="Breadcrumb" className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:underline text-blue-600">
-            Home
-          </Link>
-          {" › "}
-          <span className="text-gray-800 font-medium capitalize">
-            {slug.replaceAll("-", " ")}
-          </span>
-        </nav>
+      {/* ---- Reading Progress Bar ---- */}
+      <div
+        id="readingProgress"
+        className="reading-progress"
+        aria-hidden="true"
+      />
 
-        {/* ✅ Header */}
-        <header className="mb-6">
-          <h1 className="text-2xl md:text-4xl font-bold mb-3">{post.title}</h1>
-          <p className="text-sm text-gray-600">
-            By{" "}
-            <span className="font-medium">
-              {post.postedBy?.username || "Admin"}
-            </span>{" "}
-            •{" "}
-            {new Date(post.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </p>
-        </header>
+      <main>
+        <article>
+          {/* ================================================
+              HERO SECTION — Full-width image with overlay
+          ================================================ */}
+          {post.image?.url && (
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "clamp(260px, 50vw, 520px)",
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                src={post.image.url}
+                alt={post.title}
+                fill
+                priority
+                className="object-cover"
+                style={{ filter: "brightness(0.82)" }}
+              />
+              {/* Dark gradient overlay — makes title readable on any image */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, transparent 100%)",
+                }}
+              />
 
-        {post.image?.url && (
-          <div className="relative h-[200px] md:h-[400px] mb-6 w-full overflow-hidden rounded-md shadow-md">
-            <Image
-              src={post.image.url}
-              alt={post.title}
-              fill
-              priority // ✅ Above the fold — improves LCP score
-              className="object-cover"
+              {/* Category badge on image */}
+              {post.category && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "1.5rem",
+                    left: "1.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "inline-block",
+                      fontFamily: "var(--font-ui)",
+                      fontSize: "0.7rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      color: "#fff",
+                      background: "var(--color-accent)",
+                      padding: "0.3rem 0.8rem",
+                      borderRadius: "99px",
+                    }}
+                  >
+                    {post.category}
+                  </span>
+                </div>
+              )}
+
+              {/* Title overlaid on image (bottom) */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: "2rem clamp(1rem, 5vw, 3rem)",
+                  maxWidth: "860px",
+                  margin: "0 auto",
+                }}
+              >
+                <h1
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "clamp(1.6rem, 4vw, 2.75rem)",
+                    fontWeight: 900,
+                    lineHeight: 1.15,
+                    letterSpacing: "-0.02em",
+                    color: "#ffffff",
+                    textShadow: "0 2px 12px rgba(0,0,0,0.4)",
+                    margin: 0,
+                  }}
+                >
+                  {post.title}
+                </h1>
+              </div>
+            </div>
+          )}
+
+          {/* ================================================
+              ARTICLE CONTAINER
+          ================================================ */}
+          <div
+            style={{
+              maxWidth: "780px",
+              margin: "0 auto",
+              padding: "0 clamp(1rem, 4vw, 2rem)",
+            }}
+          >
+            {/* ---- Breadcrumb ---- */}
+            <nav
+              aria-label="Breadcrumb"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                fontSize: "0.8rem",
+                color: "var(--color-muted)",
+                padding: "1.25rem 0 0",
+                fontFamily: "var(--font-ui)",
+              }}
+            >
+              <Link
+                href="/"
+                style={{
+                  color: "var(--color-accent)",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                }}
+              >
+                Home
+              </Link>
+              <span style={{ color: "#d1d5db" }}>›</span>
+              <span
+                style={{
+                  color: "var(--color-muted)",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: "280px",
+                }}
+              >
+                {slug.replaceAll("-", " ")}
+              </span>
+            </nav>
+
+            {/* ---- Title (shown only when NO hero image) ---- */}
+            {!post.image?.url && (
+              <h1
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(1.8rem, 4vw, 2.75rem)",
+                  fontWeight: 900,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.02em",
+                  color: "var(--color-text)",
+                  margin: "1.5rem 0 1rem",
+                }}
+              >
+                {post.title}
+              </h1>
+            )}
+
+            {/* ---- Meta Bar ---- */}
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: "0.75rem",
+                padding: "1.25rem 0",
+                borderBottom: "1px solid var(--color-border)",
+                marginBottom: "2rem",
+                fontFamily: "var(--font-ui)",
+              }}
+            >
+              {/* Author avatar + name */}
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+              >
+                <div
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, var(--color-accent), var(--color-accent-2))",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: "0.85rem",
+                    flexShrink: 0,
+                  }}
+                >
+                  {(post.postedBy?.username || "N")[0].toUpperCase()}
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "0.875rem",
+                      color: "var(--color-text)",
+                    }}
+                  >
+                    {post.postedBy?.username || "NewSync Media"}
+                  </div>
+                  <div
+                    style={{ fontSize: "0.75rem", color: "var(--color-muted)" }}
+                  >
+                    {publishDate}
+                  </div>
+                </div>
+              </div>
+
+              {/* Divider dot */}
+              <span style={{ color: "#d1d5db", fontSize: "1.2rem" }}>·</span>
+
+              {/* Reading time */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                  fontSize: "0.8rem",
+                  color: "var(--color-muted)",
+                }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                {readingTime} min read
+              </div>
+
+              {/* Tags */}
+              {post.tags?.slice(0, 2).map((tag) => (
+                <span key={tag} className="badge">
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* ---- Article Body ---- */}
+            <div
+              className="prose"
+              style={{ maxWidth: "none" }}
+              dangerouslySetInnerHTML={{ __html: post.description }}
             />
-          </div>
-        )}
 
-        {/* ✅ Article Body */}
-        <div
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.description }}
-        />
-      </article>
+            {/* ---- Share Section ---- */}
+            <div
+              style={{
+                margin: "3rem 0",
+                padding: "1.75rem",
+                background:
+                  "linear-gradient(135deg, rgba(232,93,38,0.05), rgba(29,53,87,0.04))",
+                borderRadius: "var(--radius-md)",
+                border: "1px solid var(--color-border)",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                  color: "var(--color-text)",
+                  marginBottom: "0.4rem",
+                }}
+              >
+                Found this helpful?
+              </p>
+              <p
+                style={{
+                  fontSize: "0.875rem",
+                  color: "var(--color-muted)",
+                  marginBottom: "1.25rem",
+                  fontFamily: "var(--font-ui)",
+                }}
+              >
+                Share it with someone who needs to read this.
+              </p>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "0.75rem",
+                  flexWrap: "wrap",
+                }}
+              >
+                {/* Twitter / X */}
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    padding: "0.55rem 1.1rem",
+                    borderRadius: "99px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    fontFamily: "var(--font-ui)",
+                    background: "#000",
+                    color: "#fff",
+                    textDecoration: "none",
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.259 5.631 5.905-5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                  Share on X
+                </a>
+
+                {/* WhatsApp */}
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + url)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    padding: "0.55rem 1.1rem",
+                    borderRadius: "99px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    fontFamily: "var(--font-ui)",
+                    background: "#25D366",
+                    color: "#fff",
+                    textDecoration: "none",
+                  }}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                  WhatsApp
+                </a>
+
+                {/* Copy Link */}
+                <button
+                  onClick={() => navigator.clipboard?.writeText(url)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    padding: "0.55rem 1.1rem",
+                    borderRadius: "99px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    fontFamily: "var(--font-ui)",
+                    background: "var(--color-accent)",
+                    color: "#fff",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+                    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+                  </svg>
+                  Copy Link
+                </button>
+              </div>
+            </div>
+
+            {/* ---- Back to Home ---- */}
+            <div
+              style={{
+                paddingBottom: "3rem",
+                borderTop: "1px solid var(--color-border)",
+                paddingTop: "2rem",
+              }}
+            >
+              <Link
+                href="/"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  fontFamily: "var(--font-ui)",
+                  color: "var(--color-accent-2)",
+                  textDecoration: "none",
+                  transition: "color 0.2s",
+                }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Back to all posts
+              </Link>
+            </div>
+          </div>
+        </article>
+      </main>
+
+      {/* ---- Reading Progress Script ---- */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var bar = document.getElementById('readingProgress');
+              if (!bar) return;
+              window.addEventListener('scroll', function() {
+                var scrolled = window.scrollY;
+                var total = document.body.scrollHeight - window.innerHeight;
+                bar.style.width = (total > 0 ? (scrolled / total) * 100 : 0) + '%';
+              }, { passive: true });
+            })();
+          `,
+        }}
+      />
     </>
   );
 }
