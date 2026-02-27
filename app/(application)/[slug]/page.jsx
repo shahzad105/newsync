@@ -1,12 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import getSingleArticle from "@/lib/actions/getSingleArticle";
 import { getPostSlugs } from "@/lib/actions/getSlugs";
 import ShareButtons from "@/components/ShareButton";
+
 export const dynamic = "force-static";
 export const revalidate = 3600;
+
 const SITE_URL = process.env.SITE_URL || "https://www.newsync.site";
 
+// ---- Helpers ----
 function getPlainText(html = "", maxLen = 160) {
   const text = html
     .replace(/<[^>]+>/g, "")
@@ -20,13 +24,13 @@ function getPlainText(html = "", maxLen = 160) {
   return text.length > maxLen ? text.slice(0, maxLen).trim() + "…" : text;
 }
 
-// ✅ Reading time estimator
 function getReadingTime(html = "") {
   const text = html.replace(/<[^>]+>/g, "");
   const words = text.trim().split(/\s+/).length;
   return Math.max(1, Math.ceil(words / 200));
 }
 
+// ---- Static Params ----
 export async function generateStaticParams() {
   try {
     const posts = await getPostSlugs();
@@ -37,117 +41,95 @@ export async function generateStaticParams() {
   }
 }
 
-// ✅ SEO Metadata
+// ---- SEO Metadata ----
 export async function generateMetadata({ params }) {
-  const post = await getPostBySlug(params.slug);
-  if (!post) return {};
+  try {
+    const { slug } = await params;
+    const res = await getSingleArticle(slug);
+    const post = res?.data;
 
-  const url = `${process.env.SITE_URL}/${post.slug}`;
-  const imageUrl = post.image?.url || `${process.env.SITE_URL}/og-image.jpg`;
+    if (!post) return {};
 
-  const keywords = [
-    post.category,
-    ...post.title
-      .toLowerCase()
-      .replace(/[^a-z0-9 ]/g, "")
-      .split(" ")
-      .filter((w) => w.length > 3)
-      .slice(0, 8),
-    "newsync",
-    "blog",
-    "pakistan",
-  ].join(", ");
+    const url = `${SITE_URL}/${post.slug}`;
+    const imageUrl = post.image?.url || `${SITE_URL}/og-image.jpg`;
 
-  const seoTitle =
-    post.title.length > 55 ? post.title.slice(0, 52) + "..." : post.title;
+    const keywords = [
+      post.category,
+      ...post.title
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, "")
+        .split(" ")
+        .filter((w) => w.length > 3)
+        .slice(0, 8),
+      "newsync",
+      "blog",
+      "pakistan",
+    ]
+      .filter(Boolean)
+      .join(", ");
 
-  return {
-    title: seoTitle, // ✅ under 60 chars
-    description: post.description?.slice(0, 155) || post.title,
-    keywords,
+    const seoTitle =
+      post.title.length > 55 ? post.title.slice(0, 52) + "..." : post.title;
 
-    authors: [{ name: post.postedBy?.username || "NewSync" }],
-    creator: "NewSync",
-    publisher: "NewSync",
-
-    openGraph: {
-      title: post.title, // OG can be longer
-      description: post.description?.slice(0, 155),
-      url, // ✅ full URL
-      siteName: "NewSync",
-      type: "article",
-      publishedTime: post.createdAt,
-      modifiedTime: post.updatedAt,
-      authors: [post.postedBy?.username || "NewSync"],
-      images: [
-        {
-          url: imageUrl, // ✅ full Cloudinary URL
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.description?.slice(0, 155),
-      images: [imageUrl], // ✅ full URL
-      creator: "@newsync",
-    },
-
-    alternates: {
-      canonical: url, // ✅ full canonical URL
-    },
-  };
+    return {
+      title: seoTitle,
+      description: getPlainText(post.description, 155),
+      keywords,
+      authors: [{ name: post.postedBy?.username || "NewSync" }],
+      creator: "NewSync",
+      publisher: "NewSync",
+      openGraph: {
+        title: post.title,
+        description: getPlainText(post.description, 155),
+        url,
+        siteName: "NewSync",
+        type: "article",
+        publishedTime: post.createdAt,
+        modifiedTime: post.updatedAt,
+        authors: [post.postedBy?.username || "NewSync"],
+        images: [{ url: imageUrl, width: 1200, height: 630, alt: post.title }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description: getPlainText(post.description, 155),
+        images: [imageUrl],
+        creator: "@newsync",
+      },
+      alternates: {
+        canonical: url,
+      },
+    };
+  } catch (error) {
+    console.error("generateMetadata failed:", error);
+    return {};
+  }
 }
-// ✅ Main Page Component
+
+// ---- Main Page Component ----
 export default async function PostPage({ params }) {
   const { slug } = await params;
-  const res = await getSingleArticle(slug);
-  const post = res?.data;
 
-  // ---- 404 State ----
-  if (!post) {
-    return (
-      <section className="min-h-[60vh] flex flex-col items-center justify-center px-4 py-20 text-center">
-        <span
-          style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "6rem",
-            fontWeight: 900,
-            lineHeight: 1,
-            background: "linear-gradient(135deg, #e85d26, #1d3557)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
-          404
-        </span>
-        <h1 className="text-2xl font-bold mt-4 mb-2">Post Not Found</h1>
-        <p className="text-gray-500 mb-8 max-w-md">
-          The article you're looking for doesn't exist or has been removed.
-        </p>
-        <Link href="/" className="btn-primary">
-          ← Back to Home
-        </Link>
-      </section>
-    );
+  let post = null;
+  try {
+    const res = await getSingleArticle(slug);
+    post = res?.data;
+  } catch (error) {
+    console.error("PostPage fetch error:", error);
   }
+
+  if (!post) return notFound();
 
   const url = `${SITE_URL}/${slug}`;
   const image = post.image?.url || `${SITE_URL}/og-image.jpg`;
   const description = getPlainText(post.description);
-  const readingTime = getReadingTime(post.description);
+  const readingTime = getReadingTime(post.description || "");
   const publishDate = new Date(post.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
 
-  // ---- JSON-LD: BlogPosting ----
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -166,10 +148,7 @@ export default async function PostPage({ params }) {
       "@type": "Organization",
       name: "NewSync",
       url: SITE_URL,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/og-image.jpg`,
-      },
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/og-image.jpg` },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     ...(post.tags?.length && { keywords: post.tags.join(", ") }),
@@ -180,18 +159,12 @@ export default async function PostPage({ params }) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: post.title,
-        item: url,
-      },
+      { "@type": "ListItem", position: 2, name: post.title, item: url },
     ],
   };
 
   return (
     <>
-      {/* ---- Structured Data ---- */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -201,7 +174,6 @@ export default async function PostPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
-      {/* ---- Reading Progress Bar ---- */}
       <div
         id="readingProgress"
         className="reading-progress"
@@ -210,6 +182,7 @@ export default async function PostPage({ params }) {
 
       <main>
         <article className="pt-8">
+          {/* Hero Image */}
           {post.image?.url && (
             <div
               style={{
@@ -227,7 +200,6 @@ export default async function PostPage({ params }) {
                 className="object-cover"
                 style={{ filter: "brightness(0.82)" }}
               />
-              {/* Dark gradient overlay — makes title readable on any image */}
               <div
                 style={{
                   position: "absolute",
@@ -236,7 +208,6 @@ export default async function PostPage({ params }) {
                     "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, transparent 100%)",
                 }}
               />
-
               {post.category && (
                 <div
                   style={{
@@ -263,8 +234,6 @@ export default async function PostPage({ params }) {
                   </span>
                 </div>
               )}
-
-              {/* Title overlaid on image (bottom) */}
               <div
                 style={{
                   position: "absolute",
@@ -294,9 +263,7 @@ export default async function PostPage({ params }) {
             </div>
           )}
 
-          {/* ================================================
-              ARTICLE CONTAINER
-          ================================================ */}
+          {/* Article Container */}
           <div
             style={{
               maxWidth: "780px",
@@ -304,7 +271,7 @@ export default async function PostPage({ params }) {
               padding: "0 clamp(1rem, 4vw, 2rem)",
             }}
           >
-            {/* ---- Breadcrumb ---- */}
+            {/* Breadcrumb */}
             <nav
               aria-label="Breadcrumb"
               style={{
@@ -341,7 +308,7 @@ export default async function PostPage({ params }) {
               </span>
             </nav>
 
-            {/* ---- Title (shown only when NO hero image) ---- */}
+            {/* Title — only when no hero image */}
             {!post.image?.url && (
               <h1
                 style={{
@@ -358,7 +325,7 @@ export default async function PostPage({ params }) {
               </h1>
             )}
 
-            {/* ---- Meta Bar ---- */}
+            {/* Meta Bar */}
             <div
               style={{
                 display: "flex",
@@ -371,7 +338,6 @@ export default async function PostPage({ params }) {
                 fontFamily: "var(--font-ui)",
               }}
             >
-              {/* Author avatar + name */}
               <div
                 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
               >
@@ -411,10 +377,8 @@ export default async function PostPage({ params }) {
                 </div>
               </div>
 
-              {/* Divider dot */}
               <span style={{ color: "#d1d5db", fontSize: "1.2rem" }}>·</span>
 
-              {/* Reading time */}
               <div
                 style={{
                   display: "flex",
@@ -438,7 +402,6 @@ export default async function PostPage({ params }) {
                 {readingTime} min read
               </div>
 
-              {/* Tags */}
               {post.tags?.slice(0, 2).map((tag) => (
                 <span key={tag} className="badge">
                   {tag}
@@ -446,14 +409,14 @@ export default async function PostPage({ params }) {
               ))}
             </div>
 
-            {/* ---- Article Body ---- */}
+            {/* Article Body */}
             <div
               className="prose"
               style={{ maxWidth: "none" }}
               dangerouslySetInnerHTML={{ __html: post.description }}
             />
 
-            {/* ---- Share Section ---- */}
+            {/* Share Section */}
             <div
               style={{
                 margin: "3rem 0",
@@ -494,7 +457,6 @@ export default async function PostPage({ params }) {
                   flexWrap: "wrap",
                 }}
               >
-                {/* Twitter / X */}
                 <a
                   href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(url)}`}
                   target="_blank"
@@ -511,7 +473,6 @@ export default async function PostPage({ params }) {
                     background: "#000",
                     color: "#fff",
                     textDecoration: "none",
-                    transition: "opacity 0.2s",
                   }}
                 >
                   <svg
@@ -525,7 +486,6 @@ export default async function PostPage({ params }) {
                   Share on X
                 </a>
 
-                {/* WhatsApp */}
                 <a
                   href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + url)}`}
                   target="_blank"
@@ -555,12 +515,11 @@ export default async function PostPage({ params }) {
                   WhatsApp
                 </a>
 
-                {/* Copy Link */}
                 <ShareButtons url={url} title={post.title} />
               </div>
             </div>
 
-            {/* ---- Back to Home ---- */}
+            {/* Back to Home */}
             <div
               style={{
                 paddingBottom: "3rem",
@@ -579,7 +538,6 @@ export default async function PostPage({ params }) {
                   fontFamily: "var(--font-ui)",
                   color: "var(--color-accent-2)",
                   textDecoration: "none",
-                  transition: "color 0.2s",
                 }}
               >
                 <svg
@@ -599,7 +557,6 @@ export default async function PostPage({ params }) {
         </article>
       </main>
 
-      {/* ---- Reading Progress Script ---- */}
       <script
         dangerouslySetInnerHTML={{
           __html: `
