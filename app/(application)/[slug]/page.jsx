@@ -160,7 +160,6 @@ export default async function PostPage({ params }) {
     ...(post.tags?.length && { keywords: post.tags.join(", ") }),
   };
 
-  // ---- JSON-LD: Breadcrumb ----
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

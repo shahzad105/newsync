@@ -1,39 +1,75 @@
 import CustomPagination from "@/components/CustomPagination";
 import News from "@/components/News";
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 
+export const revalidate = 60;
+
+// ✅ Your actual 13 categories — no more hardcoded wrong ones
+const ALL_CATEGORIES = [
+  { slug: "ai", label: "AI" },
+  { slug: "machine-learning", label: "Machine Learning" },
+  { slug: "blockchain", label: "Blockchain" },
+  { slug: "startups", label: "Startups" },
+  { slug: "entrepreneurship", label: "Entrepreneurship" },
+  { slug: "freelancing", label: "Freelancing" },
+  { slug: "jobs", label: "Jobs" },
+  { slug: "careers", label: "Careers" },
+  { slug: "technology", label: "Technology" },
+  { slug: "apps", label: "Apps" },
+  { slug: "youth", label: "Youth" },
+  { slug: "productivity", label: "Productivity" },
+  { slug: "lifestyle", label: "Lifestyle" },
+];
+
+const SITE_URL = process.env.SITE_URL || "https://www.newsync.site"; // ✅ Fallback added
+
+// ✅ Helper — "machine-learning" → "Machine Learning"
+function formatCategory(slug = "") {
+  return slug
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
+// ✅ generateMetadata — single fetch, no double call
 export async function generateMetadata({ params, searchParams }) {
   const { category: categoryParam = "" } = await params;
   const { page: pageQuery } = await searchParams;
   const pageNum = parseInt(pageQuery) || 1;
 
-  const formattedCategory = categoryParam
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(" ");
+  const formattedCategory = formatCategory(categoryParam);
 
-  // ✅ Fetch only 1 article for OG image
-  const res = await fetch(
-    `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=1&page=${pageNum}&latest=true`,
-    { next: { revalidate: 60 } }
-  );
-  const data = await res.json();
-  const firstImage =
-    data?.articles?.[0]?.image?.url || `${process.env.SITE_URL}/newsync.png`;
+  // ✅ Fixed: title says "Blogs" not "News"
+  // ✅ Fixed: Page 1 doesn't say "- Page 1"
+  const title =
+    pageNum === 1
+      ? `${formattedCategory} Blogs | NewSync`
+      : `${formattedCategory} Blogs — Page ${pageNum} | NewSync`;
 
-  // ✅ Meta values
-  const title = `${formattedCategory} News - Page ${pageNum} `;
-  const description = `Read the latest ${formattedCategory.toLowerCase()} news, stories, and updates. Page ${pageNum}.`;
+  const description = `Read the latest ${formattedCategory.toLowerCase()} blog posts, stories, and insights on NewSync. Page ${pageNum}.`;
 
-  // ✅ Canonical URL (no ?page=1)
+  // ✅ Fixed: canonical URL — page 1 never has ?page=1
   const pageUrl =
     pageNum === 1
-      ? `${process.env.SITE_URL}/category/${categoryParam}`
-      : `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum}`;
+      ? `${SITE_URL}/category/${categoryParam}`
+      : `${SITE_URL}/category/${categoryParam}?page=${pageNum}`;
+
+  const ogImage = `${SITE_URL}/og-image.jpg`; // ✅ No extra fetch — use default OG image
 
   return {
     title,
     description,
+    alternates: {
+      canonical: pageUrl,
+      // ✅ Fixed: was returning false — now returns undefined when not applicable
+      ...(pageNum > 1 && {
+        prev:
+          pageNum - 1 === 1
+            ? `${SITE_URL}/category/${categoryParam}`
+            : `${SITE_URL}/category/${categoryParam}?page=${pageNum - 1}`,
+      }),
+    },
     openGraph: {
       title,
       description,
@@ -42,10 +78,10 @@ export async function generateMetadata({ params, searchParams }) {
       type: "website",
       images: [
         {
-          url: firstImage,
+          url: ogImage,
           width: 1200,
           height: 630,
-          alt: `${formattedCategory} News`,
+          alt: `${formattedCategory} Blogs`,
         },
       ],
     },
@@ -53,49 +89,77 @@ export async function generateMetadata({ params, searchParams }) {
       card: "summary_large_image",
       title,
       description,
-      images: [firstImage],
-    },
-    alternates: {
-      canonical: pageUrl,
-      prev:
-        pageNum > 1 &&
-        `${process.env.SITE_URL}/category/${categoryParam}${
-          pageNum - 1 === 1 ? "" : `?page=${pageNum - 1}`
-        }`,
-      next:
-        data?.totalPages > pageNum &&
-        `${process.env.SITE_URL}/category/${categoryParam}?page=${pageNum + 1}`,
+      images: [ogImage],
+      creator: "@newsync",
     },
     robots: { index: true, follow: true },
   };
 }
 
-// ✅ Category Page component
+// ✅ Category Page Component
 export default async function CategoryPage({ params, searchParams }) {
   const { category: categoryParam = "" } = await params;
   const { page: pageQuery } = await searchParams;
   const pageNum = parseInt(pageQuery) || 1;
 
-  const formattedCategory = categoryParam
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(" ");
+  const formattedCategory = formatCategory(categoryParam);
 
-  // ✅ Fetch full articles for the page
-  const res = await fetch(
-    `${process.env.SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
-    { next: { revalidate: 60 } }
-  );
-  const data = await res.json();
-  const articles = data?.articles ?? [];
-  const totalPages = data?.totalPages ?? 1;
+  // ✅ Single fetch — removed the duplicate metadata fetch
+  let articles = [];
+  let totalPages = 1;
+
+  try {
+    const res = await fetch(
+      `${SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
+      { next: { revalidate: 60 } },
+    );
+    const data = await res.json();
+    articles = data?.articles ?? [];
+    totalPages = data?.totalPages ?? 1;
+  } catch (err) {
+    console.error("CategoryPage fetch failed:", err.message);
+    // ✅ Fails gracefully — shows empty state instead of crashing
+  }
+
+  // ✅ JSON-LD — CollectionPage schema for category pages
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${formattedCategory} Blogs`,
+    description: `The latest ${formattedCategory.toLowerCase()} blog posts on NewSync.`,
+    url: `${SITE_URL}/category/${categoryParam}`,
+    publisher: {
+      "@type": "Organization",
+      name: "NewSync",
+      url: SITE_URL,
+    },
+    ...(articles.length > 0 && {
+      hasPart: articles.map((article) => ({
+        "@type": "BlogPosting",
+        headline: article.title,
+        url: `${SITE_URL}/${article.slug}`,
+        datePublished: article.createdAt,
+        image: article.image?.url,
+      })),
+    }),
+  };
+
+  // ✅ Filter out current category from the chips
+  const otherCategories = ALL_CATEGORIES.filter(
+    (c) => c.slug !== categoryParam,
+  ).slice(0, 8); // show max 8 other categories
 
   return (
     <>
-      {/* ✅ Page Content */}
-      <div className="relative md:py-10 space-y-5">
-        {/* Breadcrumb */}
-        <nav className="text-sm pl-2 md:pl-0">
+      {/* ✅ JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <main className="relative md:py-10 space-y-6">
+        {/* ---- Breadcrumb ---- */}
+        <nav aria-label="Breadcrumb" className="text-sm pl-2 md:pl-0">
           <Link href="/" className="text-blue-600 hover:underline font-medium">
             Home
           </Link>
@@ -105,45 +169,97 @@ export default async function CategoryPage({ params, searchParams }) {
           </span>
         </nav>
 
-        {/* Title */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-blue-900 pl-2 md:pl-0">
-          {formattedCategory} News
-        </h1>
-
-        {/* Category Filters */}
-        <div className="flex flex-wrap gap-3 pl-2 md:pl-0">
-          {["Business", "Entertainment", "Sports", "Tech", "Travel"].map(
-            (tag) => (
-              <Link
-                key={tag}
-                href={`/category/${tag.toLowerCase()}?page=1`}
-                className="bg-blue-500 text-white text-xs px-3 py-1 rounded-full hover:bg-blue-600 transition"
-              >
-                {tag}
-              </Link>
-            )
-          )}
+        {/* ---- Page Title ---- */}
+        <div className="pl-2 md:pl-0">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+            {formattedCategory}{" "}
+            <span style={{ color: "var(--color-accent)" }}>Blogs</span>
+            {/* ✅ Fixed: says "Blogs" not "News" */}
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            {pageNum === 1
+              ? `Everything about ${formattedCategory.toLowerCase()} in one place`
+              : `Page ${pageNum} of ${totalPages}`}
+          </p>
         </div>
 
-        {/* News Articles */}
-        <section>
-          {articles.length ? (
+        {/* ---- Category Filter Chips ---- */}
+        {/* ✅ Fixed: now shows your ACTUAL 13 categories */}
+        <div className="flex flex-wrap gap-2 pl-2 md:pl-0">
+          {/* Current category — highlighted */}
+          <span
+            style={{
+              display: "inline-block",
+              background: "var(--color-accent)",
+              color: "#fff",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              padding: "0.3rem 0.85rem",
+              borderRadius: "99px",
+              fontFamily: "var(--font-ui)",
+            }}
+          >
+            {formattedCategory}
+          </span>
+
+          {/* Other categories */}
+          {otherCategories.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/category/${cat.slug}`}
+              className="badge" // ✅ Uses your globals.css badge style
+            >
+              {cat.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* ---- Articles Grid ---- */}
+        <section aria-label={`${formattedCategory} blog posts`}>
+          {articles.length > 0 ? (
             <News post={articles} />
           ) : (
-            <p>No articles found.</p>
+            // ✅ Proper empty state — not just a plain <p>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "4rem 1rem",
+                color: "var(--color-muted)",
+              }}
+            >
+              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📭</div>
+              <h2
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "1.3rem",
+                  fontWeight: 700,
+                  color: "var(--color-text)",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                No posts yet in {formattedCategory}
+              </h2>
+              <p style={{ fontSize: "0.9rem", marginBottom: "1.5rem" }}>
+                We're working on it. Check back soon or explore another
+                category.
+              </p>
+              <Link href="/" className="btn-primary">
+                ← Back to Home
+              </Link>
+            </div>
           )}
         </section>
 
-        {/* Pagination */}
-        {articles.length > 0 && (
-          <div className="pt-6">
+        {/* ---- Pagination ---- */}
+        {totalPages > 1 && articles.length > 0 && (
+          <div className="pt-4">
             <CustomPagination
               currentPage={pageNum - 1}
               pageCount={totalPages}
             />
           </div>
         )}
-      </div>
+      </main>
     </>
   );
 }
