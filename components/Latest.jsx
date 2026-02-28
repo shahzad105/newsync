@@ -4,7 +4,6 @@ import NewsSkeleton from "@/skeletons/NewsSkeleton";
 import News from "./News";
 
 const Latest = ({ articles }) => {
-  console.log(articles);
   return (
     <>
       {articles && articles.length > 0 && (

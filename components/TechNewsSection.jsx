@@ -16,7 +16,7 @@ const TechNewsSection = () => {
     limit: 3,
     latest: true,
   });
-  console.log("TechNewsSection data:", data);
+
   const articles = data?.articles || [];
   const totalPages = data?.totalPages || 1;
 
@@ -63,16 +63,8 @@ const TechNewsSection = () => {
           >
             Technology
           </h2>
-
-          {/* Post count badge */}
-          {!isLoading && articles.length > 0 && (
-            <span className="badge">
-              Page {page} of {totalPages}
-            </span>
-          )}
         </div>
 
-        {/* Right — Prev / Next + View All */}
         <div className="flex items-center gap-2">
           <Link
             href="/category/technology"

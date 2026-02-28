@@ -9,7 +9,6 @@ import { Analytics } from "@vercel/analytics/next";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
 });
 
 export const metadata = {
