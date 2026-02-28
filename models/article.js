@@ -13,17 +13,16 @@ const articleSchema = new mongoose.Schema(
 
     slug: {
       type: String,
-      // ✅ Required — no article should exist without a slug
+
       required: [true, "Slug is required"],
-      // ✅ Unique enforced at DB level — prevents race conditions
+
       unique: true,
       trim: true,
       lowercase: true,
-      // ✅ Indexed — every page lookup is by slug, needs to be fast
+
       index: true,
     },
 
-    // ✅ Fixed: "machine learning" → "machine-learning" (matches URL slugs)
     category: {
       type: String,
       required: [true, "Please add a category"],
@@ -32,7 +31,7 @@ const articleSchema = new mongoose.Schema(
       enum: {
         values: [
           "ai",
-          "machine-learning", // ✅ Fixed: hyphen not space
+          "machine-learning",
           "blockchain",
           "startups",
           "entrepreneurship",
@@ -47,14 +46,14 @@ const articleSchema = new mongoose.Schema(
         ],
         message: "{VALUE} is not a valid category",
       },
-      // ✅ Indexed — filtered on every category page
+
       index: true,
     },
 
     description: {
       type: String,
       required: [true, "Please add a description"],
-      // ✅ Minimum content for SEO value
+
       minLength: [50, "Description must be at least 50 characters"],
     },
 
@@ -66,23 +65,19 @@ const articleSchema = new mongoose.Schema(
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "Please add an author"], // ✅ Required now
+      required: [true, "Please add an author"],
       index: true,
     },
   },
   {
-    timestamps: true, // createdAt + updatedAt auto-managed
+    timestamps: true,
   },
 );
 
-// ✅ Compound index — speeds up "latest posts by category" queries
-// This is the exact query your category page runs on every load
 articleSchema.index({ category: 1, createdAt: -1 });
 
-// ✅ Index for homepage "latest all posts" query
 articleSchema.index({ createdAt: -1 });
 
-// ✅ Pre-save hook — only runs on .save() and .create()
 articleSchema.pre("save", async function (next) {
   // Only regenerate slug if title was changed
   if (!this.isModified("title")) return next();
@@ -115,11 +110,9 @@ articleSchema.pre("save", async function (next) {
   }
 });
 
-// ✅ Pre-save hook for findOneAndUpdate — runs when title updated via API
 articleSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate();
 
-  // Only regenerate if title is being updated
   if (!update?.title && !update?.$set?.title) return next();
 
   try {

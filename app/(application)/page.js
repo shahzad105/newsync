@@ -6,14 +6,26 @@ import HeroSkeleton from "@/skeletons/HeroSkeleton";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "NewSync - Trending Blogs from Pakistan, USA & World",
+  title: "NewSync — Tech, AI, Freelancing & Career Blogs",
   description:
     "Explore trending blog posts on technology, lifestyle, startups, careers, and global stories from Pakistan, the USA, and around the world.",
+  keywords: [
+    "trending blogs ",
+    "latest tech articles",
+    "ai news 2026",
+    "freelancing tips ",
+    "it careers ",
+    "software jobs ",
+    "tech blogs for youth",
+    "startup news ",
+    "lifestyle articles",
+    "productivity blogs",
+  ],
   alternates: {
     canonical: "https://www.newsync.site/",
   },
   openGraph: {
-    title: "NewSync - Trending Blogs from Pakistan, USA & World",
+    title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on technology, lifestyle, startups, careers, and global stories from Pakistan, the USA, and around the world.",
     url: "https://www.newsync.site/",
@@ -29,7 +41,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NewSync - Trending Blogs from Pakistan, USA & World",
+    title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on tech, lifestyle, startups and more on NewSync.",
     images: ["https://www.newsync.site/og-image.jpg"],
@@ -78,13 +90,14 @@ const jsonLd = {
 };
 
 export default async function HomePage() {
-  const heroCategories = "careers,startups,apps,youth";
+  const heroCategories = "ai,machine-learning,blockchain";
   const lifestyleCategories = "lifestyle";
+  const latestCategories = "startups,entrepreneurship,freelancing";
 
   const [heroArticles, lifestyleArticles, latestArticles] = await Promise.all([
     fetchArticles(heroCategories, 5).catch(() => ({ articles: [] })),
     fetchArticles(lifestyleCategories, 6).catch(() => ({ articles: [] })),
-    fetchArticles("All", 6).catch(() => ({ articles: [] })),
+    fetchArticles(latestCategories, 6).catch(() => ({ articles: [] })),
   ]);
 
   return (

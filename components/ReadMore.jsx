@@ -21,12 +21,10 @@ function formatDate(dateStr) {
 const ReadMore = () => {
   const [page, setPage] = useState(1);
 
-  // ✅ Fixed: using your actual 13 categories (lowercase, no spaces)
   const { data, isLoading, isError, isFetching } = useGetArticles({
     limit: 5,
     page,
-    category:
-      "ai,machine-learning,blockchain,startups,entrepreneurship,freelancing,jobs,careers,technology,apps,youth,productivity,lifestyle",
+    category: "jobs,careers,apps",
   });
 
   const articles = data?.articles || [];

@@ -12,7 +12,6 @@ const News = ({ post }) => {
           key={item._id}
           style={{ textDecoration: "none" }}
         >
-          {/* ✅ <article> tag — semantic HTML for Google */}
           <article
             className="card animate-fade-up"
             style={{
@@ -33,19 +32,17 @@ const News = ({ post }) => {
               }}
             >
               <Image
-                src={item?.image?.url || "/og-image.jpg"} // ✅ Fixed fallback
+                src={item?.image?.url || "/fallback.jpg"}
                 alt={item.title}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                // ✅ Fixed: priority only on first 3 cards — rest lazy load
                 priority={index < 3}
                 style={{
                   transition: "transform 0.5s cubic-bezier(0.4,0,0.2,1)",
                 }}
               />
 
-              {/* Subtle gradient overlay on image */}
               <div
                 style={{
                   position: "absolute",
@@ -56,7 +53,6 @@ const News = ({ post }) => {
                 }}
               />
 
-              {/* Category badge on image */}
               <span
                 style={{
                   position: "absolute",
@@ -68,7 +64,7 @@ const News = ({ post }) => {
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   color: "#fff",
-                  background: "var(--color-accent)", // ✅ Brand orange not pink
+                  background: "var(--color-accent)",
                   padding: "0.2rem 0.6rem",
                   borderRadius: "99px",
                 }}
@@ -166,7 +162,6 @@ const News = ({ post }) => {
                     marginLeft: "auto",
                   }}
                 >
-                  {/* ✅ Fixed: was post.createdAt — now correctly item.createdAt */}
                   {item.createdAt
                     ? new Date(item.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",

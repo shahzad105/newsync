@@ -16,23 +16,22 @@ export const metadata = {
   metadataBase: new URL("https://www.newsync.site/"),
 
   title: {
-    default: "NewSync - Trending Blogs from Pakistan, USA & World",
+    default: "NewSync — Tech, AI, Freelancing & Career Blogs",
     template: "%s | NewSync",
   },
 
   description:
     "Explore trending blog posts on technology, lifestyle, startups, and global stories from Pakistan, the USA, and around the world. Read, discover, and stay informed with NewSync.",
-
   keywords: [
-    "blog",
-    "trending blogs",
-    "Pakistan blogs",
-    "USA blogs",
-    "technology blog",
-    "lifestyle blog",
-    "startup stories",
-    "world stories",
-    "NewSync blog",
+    "newsync",
+    "pakistan blogs",
+    "tech blogs pakistan",
+    "ai blogs",
+    "freelancing blogs",
+    "career blogs pakistan",
+    "technology news pakistan",
+    "startup blogs",
+    "lifestyle blogs pakistan",
   ],
 
   authors: [{ name: "NewSync Media", url: "https://www.newsync.site" }],
@@ -41,7 +40,7 @@ export const metadata = {
   category: "blog",
 
   openGraph: {
-    title: "NewSync - Trending Blogs from Pakistan, USA & World",
+    title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on technology, lifestyle, startups, and global stories — tailored to your interests on NewSync.",
     url: "https://www.newsync.site/",
@@ -60,7 +59,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "NewSync - Trending Blogs from Pakistan, USA & World",
+    title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on tech, lifestyle, startups, and global stories — all in one place on NewSync.",
     creator: "@newsync",
@@ -97,10 +96,7 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" className={poppins.variable}>
-      <head>
-        {/* Bing Webmaster Verification */}
-        <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" />
-      </head>
+      <head></head>
       <body className="bg-white text-black font-sans">
         <ReactQueryProvider>
           <SessionWrapper session={session}>{children}</SessionWrapper>

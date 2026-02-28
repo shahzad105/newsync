@@ -11,8 +11,7 @@ const PopularNews = () => {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching, isError } = useGetArticles({
-    category:
-      "lifestyle,entrepreneurship,productivity,careers,youth,freelancing",
+    category: "youth,productivity",
     limit: 5,
     page,
     latest: true,
