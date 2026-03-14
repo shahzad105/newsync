@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
     if (!post) return {};
 
     const url = `${SITE_URL}/${post.slug}`;
-    const imageUrl = post.image?.url || `${SITE_URL}/og-image.jpg`;
+    const imageUrl = post.image?.url || `${SITE_URL}/logo.png`;
 
     const keywords = [
       post.category,

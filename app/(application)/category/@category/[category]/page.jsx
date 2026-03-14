@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 
 export const revalidate = 60;
 
-// ✅ Your actual 13 categories — no more hardcoded wrong ones
 const ALL_CATEGORIES = [
   { slug: "ai", label: "AI" },
   { slug: "machine-learning", label: "Machine Learning" },
@@ -22,9 +21,8 @@ const ALL_CATEGORIES = [
   { slug: "lifestyle", label: "Lifestyle" },
 ];
 
-const SITE_URL = process.env.SITE_URL || "https://www.newsync.site"; // ✅ Fallback added
+const SITE_URL = process.env.SITE_URL || "https://www.newsync.site";
 
-// ✅ Helper — "machine-learning" → "Machine Learning"
 function formatCategory(slug = "") {
   return slug
     .split("-")
@@ -40,29 +38,26 @@ export async function generateMetadata({ params, searchParams }) {
 
   const formattedCategory = formatCategory(categoryParam);
 
-  // ✅ Fixed: title says "Blogs" not "News"
-  // ✅ Fixed: Page 1 doesn't say "- Page 1"
   const title =
     pageNum === 1
-      ? `${formattedCategory} Blogs | NewSync`
-      : `${formattedCategory} Blogs — Page ${pageNum} | NewSync`;
+      ? `${formattedCategory} Blogs `
+      : `${formattedCategory} Blogs — Page ${pageNum} `;
 
   const description = `Read the latest ${formattedCategory.toLowerCase()} blog posts, stories, and insights on NewSync. Page ${pageNum}.`;
 
-  // ✅ Fixed: canonical URL — page 1 never has ?page=1
   const pageUrl =
     pageNum === 1
       ? `${SITE_URL}/category/${categoryParam}`
       : `${SITE_URL}/category/${categoryParam}?page=${pageNum}`;
 
-  const ogImage = `${SITE_URL}/og-image.jpg`; // ✅ No extra fetch — use default OG image
+  const ogImage = `${SITE_URL}/logo.png`;
 
   return {
     title,
     description,
     alternates: {
       canonical: pageUrl,
-      // ✅ Fixed: was returning false — now returns undefined when not applicable
+
       ...(pageNum > 1 && {
         prev:
           pageNum - 1 === 1
@@ -104,7 +99,6 @@ export default async function CategoryPage({ params, searchParams }) {
 
   const formattedCategory = formatCategory(categoryParam);
 
-  // ✅ Single fetch — removed the duplicate metadata fetch
   let articles = [];
   let totalPages = 1;
 
