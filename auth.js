@@ -1,14 +1,13 @@
-import NextAuth, { AuthError } from "next-auth";
+import NextAuth, { CredentialsSignin } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import User from "@/models/user";
 import dbConnect from "@/lib/DB";
 import bcrypt from "bcryptjs";
 
-class CustomAuthError extends AuthError {
-  constructor(message) {
+class CustomAuthError extends CredentialsSignin {
+  constructor(code) {
     super();
-    this.message = message;
-    this.name = "CustomAuthError";
+    this.code = code;
   }
 }
 
@@ -23,14 +22,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         await dbConnect();
-
         const { email, password } = credentials;
+
         if (!email || !password) {
           throw new CustomAuthError("Email and password are required");
         }
 
         const user = await User.findOne({ email }).select("+password");
-
         if (!user) throw new CustomAuthError("Invalid email or password");
         if (!user.isVerified) throw new CustomAuthError("Email not verified");
 
@@ -50,18 +48,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-
   secret: process.env.AUTH_SECRET,
-
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
-
   jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
-
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {
@@ -72,7 +66,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.isVerified = user.isVerified;
         token.avatar = user.avatar;
       }
-
       if (trigger === "update" && session) {
         if (session.username) token.username = session.username;
         if (session.avatar) token.avatar = session.avatar;
@@ -81,10 +74,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (session.isVerified !== undefined)
           token.isVerified = session.isVerified;
       }
-
       return token;
     },
-
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.email = token.email;
@@ -95,7 +86,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-
   cookies: {
     sessionToken: {
       name: isProd
@@ -109,7 +99,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
   },
-
   pages: {
     signIn: "/auth/login",
     error: "/auth/login",

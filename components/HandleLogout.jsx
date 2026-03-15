@@ -27,12 +27,15 @@ export default function LogoutButton() {
     <button
       onClick={handleLogout}
       disabled={loading}
-      className={`flex items-center gap-2 px-4 md:py-2 w-full text-left hover:bg-gray-100 transition ${
-        loading ? "text-gray-400 cursor-not-allowed" : "text-red-600"
-      }`}
+      className={`w-full flex items-center gap-2 px-4 py-2.5 rounded-lg font-ui text-[0.82rem] font-medium transition-all border-none cursor-pointer
+        ${
+          loading
+            ? "text-muted bg-transparent cursor-not-allowed opacity-60"
+            : "text-red-500 bg-transparent hover:bg-red-50 hover:text-red-600"
+        }`}
     >
-      <FaSignOutAlt size={18} />
-  <span className="md:block hidden">    {loading ? "Logging out..." : "Logout"}</span>
+      <FaSignOutAlt size={13} className="flex-shrink-0" />
+      <span>{loading ? "Logging out..." : "Logout"}</span>
     </button>
   );
 }

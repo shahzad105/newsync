@@ -5,17 +5,24 @@ export const config = {
   matcher: ["/dashboard/:path*", "/auth/:path*", "/profile/:path*"],
 };
 
+const isProd = process.env.NODE_ENV === "production";
+
 export default async function middleware(req) {
   const token = await getToken({
     req,
     secret: process.env.AUTH_SECRET,
-    cookieName: "__Secure-next-auth.session-token",
+
+    cookieName: isProd
+      ? "__Secure-next-auth.session-token"
+      : "next-auth.session-token",
   });
+
   const { pathname } = req.nextUrl;
 
   if (!token && pathname.startsWith("/profile")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
+
   if (pathname.startsWith("/auth")) {
     if (token) {
       return NextResponse.redirect(new URL("/", req.url));

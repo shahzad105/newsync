@@ -1,30 +1,19 @@
 @import "tailwindcss";
 
-/* ============================================
-   NEWSYNC — GLOBAL STYLES
-   Editorial magazine aesthetic
-   Clean, bold, engaging, fast
-============================================ */
-
-/* ============================================
-   GOOGLE FONTS
-   Playfair Display — headings (editorial feel)
-   Source Serif 4    — body copy (readable, warm)
-============================================ */
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap");
 
 /* ============================================
-   CSS VARIABLES — Single source of truth
+   THEME TOKENS
 ============================================ */
-:root {
-  --color-bg: #fafaf8; /* warm off-white — easier on eyes */
+@theme {
+  --color-bg: #fafaf8;
   --color-surface: #ffffff;
   --color-border: #e8e4df;
   --color-text: #1a1a1a;
   --color-muted: #6b7280;
-  --color-accent: #e85d26; /* bold burnt orange — memorable */
-  --color-accent-2: #1d3557; /* deep navy — trustworthy */
-  --color-highlight: #fff3cd; /* soft yellow highlight */
+  --color-accent: #e85d26;
+  --color-accent-2: #1d3557;
+  --color-highlight: #fff3cd;
 
   --font-display: "Playfair Display", Georgia, serif;
   --font-body: "Source Serif 4", Georgia, serif;
@@ -40,7 +29,7 @@
 }
 
 /* ============================================
-   BASE RESET & BODY
+   BASE
 ============================================ */
 @layer base {
   *,
@@ -64,17 +53,14 @@
     min-height: 100vh;
   }
 
-  /* ---- Selection Color ---- */
   ::selection {
     background-color: var(--color-accent);
-    color: #ffffff;
+    color: #fff;
   }
 
-  /* ---- Custom Scrollbar ---- */
   ::-webkit-scrollbar {
     width: 6px;
   }
-
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(
       180deg,
@@ -83,26 +69,21 @@
     );
     border-radius: 99px;
   }
-
   ::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  /* ---- Focus Ring (accessibility) ---- */
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 3px;
     border-radius: var(--radius-sm);
   }
 
-  /* ---- Links ---- */
   a {
     color: inherit;
     text-decoration: none;
     transition: var(--transition);
   }
-
-  /* ---- Images ---- */
   img {
     max-width: 100%;
     display: block;
@@ -110,119 +91,254 @@
 }
 
 /* ============================================
-   ANIMATIONS
+   KEYFRAMES
 ============================================ */
-@layer utilities {
-  /* --- Slide In Right (Toast / Sidebar) --- */
-  @keyframes slideInRight {
-    from {
-      transform: translateX(100px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-300px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInRight {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+@keyframes searchSlideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+@utility search-slide-down {
+  animation: searchSlideDown 0.22s cubic-bezier(0.4, 0, 0.2, 1) both; /* ✅ both add kiya */
+}
+/* ============================================
+   CUSTOM UTILITIES
+============================================ */
+@utility animate-slide-in-left {
+  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@utility animate-slide-in-right {
+  animation: slideInRight 0.4s ease-out both;
+}
+@utility animate-fade-up {
+  animation: fadeUp 0.5s ease-out both;
+}
+@utility animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+@utility animate-pulse-dot {
+  animation: pulseDot 1.4s ease-in-out infinite;
+}
+@utility search-slide-down {
+  animation: searchSlideDown 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   REUSABLE COMPONENTS
+   Only truly reusable classes live here.
+   Component-specific styles go in their JSX.
+============================================ */
+@layer components {
+  /* ── Skeleton ── */
+  .skeleton {
+    background: linear-gradient(90deg, #ede9e4 25%, #f5f2ef 50%, #ede9e4 75%);
+    background-size: 400px 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+    border-radius: var(--radius-sm);
   }
 
-  /* --- Slide In Left (Mobile Nav) --- */
-  @keyframes slideInLeft {
-    from {
-      transform: translateX(-300px);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
+  /* ── Card ── */
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: var(--transition);
+  }
+  .card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+    border-color: transparent;
   }
 
-  /* --- Slide In (General) --- */
-  @keyframes slideIn {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: rgba(232, 93, 38, 0.09);
+    padding: 0.25rem 0.65rem;
+    border-radius: 99px;
+    border: 1px solid rgba(232, 93, 38, 0.2);
+    transition: var(--transition);
+    cursor: pointer;
+  }
+  .badge:hover {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
   }
 
-  /* --- Fade Up (Cards / Sections on scroll) --- */
-  @keyframes fadeUp {
-    from {
-      transform: translateY(24px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  /* ── Button Primary ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #fff;
+    background: var(--color-accent);
+    padding: 0.6rem 1.4rem;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(232, 93, 38, 0.3);
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    background: #cf4d1a;
+    box-shadow: 0 4px 16px rgba(232, 93, 38, 0.4);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
   }
 
-  /* --- Fade In --- */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  /* ── Underline Link ── */
+  .underline-link {
+    position: relative;
+    display: inline-block;
+    font-weight: 500;
+    color: var(--color-accent-2);
+  }
+  .underline-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--color-accent);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+  .underline-link:hover::after {
+    width: 100%;
+  }
+  .underline-link:hover {
+    color: var(--color-accent);
   }
 
-  /* --- Shimmer (Skeleton loading) --- */
-  @keyframes shimmer {
-    0% {
-      background-position: -400px 0;
-    }
-    100% {
-      background-position: 400px 0;
-    }
+  /* ── Section Divider ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin: 2.5rem 0 1.5rem;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
   }
 
-  /* --- Pulse Dot (Live / Breaking indicator) --- */
-  @keyframes pulseDot {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.4;
-      transform: scale(0.85);
-    }
+  /* ── Text Gradient ── */
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--color-accent),
+      var(--color-accent-2)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  /* --- Underline Draw (Link hover) --- */
-  @keyframes underlineDraw {
-    from {
-      width: 0;
-    }
-    to {
-      width: 100%;
-    }
+  /* ── Reading Progress Bar ── */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(
+      90deg,
+      var(--color-accent),
+      var(--color-accent-2)
+    );
+    z-index: 9999;
+    transition: width 0.1s linear;
+    border-radius: 0 99px 99px 0;
   }
 
-  /* ---- Utility Classes ---- */
-  .animate-slide-in-right {
-    animation: slideInRight 0.4s ease-out both;
-  }
-  .animate-slide-in-left {
-    animation: slideInLeft 0.4s ease-out both;
-  }
-  .animate-slide-in {
-    animation: slideIn 0.3s ease-out both;
-  }
-  .animate-fade-up {
-    animation: fadeUp 0.5s ease-out both;
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.4s ease-out both;
-  }
-  .animate-pulse-dot {
-    animation: pulseDot 1.4s ease-in-out infinite;
-  }
-
-  /* Staggered children (add to parent) */
+  /* ── Stagger children ── */
   .stagger-children > *:nth-child(1) {
     animation-delay: 0.05s;
   }
@@ -242,144 +358,9 @@
     animation-delay: 0.3s;
   }
 
-  /* ============================================
-     SKELETON LOADER
-  ============================================ */
-  .skeleton {
-    background: linear-gradient(90deg, #ede9e4 25%, #f5f2ef 50%, #ede9e4 75%);
-    background-size: 400px 100%;
-    animation: shimmer 1.4s ease-in-out infinite;
-    border-radius: var(--radius-sm);
-  }
-
-  /* ============================================
-     CARD — Reusable blog card style
-  ============================================ */
-  .card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-    transition: var(--transition);
-  }
-
-  .card:hover {
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-3px);
-    border-color: transparent;
-  }
-
-  /* ============================================
-     CATEGORY BADGE
-  ============================================ */
-  .badge {
-    display: inline-block;
-    font-family: var(--font-ui);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    background: rgba(232, 93, 38, 0.09);
-    padding: 0.25rem 0.65rem;
-    border-radius: 99px;
-    border: 1px solid rgba(232, 93, 38, 0.2);
-    transition: var(--transition);
-  }
-
-  .badge:hover {
-    background: var(--color-accent);
-    color: #fff;
-    border-color: var(--color-accent);
-  }
-
-  /* ============================================
-     BUTTON — Primary CTA
-  ============================================ */
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-ui);
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: #fff;
-    background: var(--color-accent);
-    padding: 0.6rem 1.4rem;
-    border-radius: 99px;
-    border: none;
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 2px 8px rgba(232, 93, 38, 0.3);
-  }
-
-  .btn-primary:hover {
-    background: #cf4d1a;
-    box-shadow: 0 4px 16px rgba(232, 93, 38, 0.4);
-    transform: translateY(-1px);
-  }
-
-  .btn-primary:active {
-    transform: translateY(0);
-  }
-
-  /* ============================================
-     ANIMATED UNDERLINE LINK
-     Usage: <a class="underline-link">Read more</a>
-  ============================================ */
-  .underline-link {
-    position: relative;
-    display: inline-block;
-    font-weight: 500;
-    color: var(--color-accent-2);
-  }
-
-  .underline-link::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    height: 2px;
-    width: 0;
-    background: var(--color-accent);
-    border-radius: 99px;
-    transition: width 0.3s ease;
-  }
-
-  .underline-link:hover::after {
-    width: 100%;
-  }
-
-  .underline-link:hover {
-    color: var(--color-accent);
-  }
-
-  /* ============================================
-     READING PROGRESS BAR
-     Add <div class="reading-progress" id="readingProgress"></div>
-     to your blog post layout, then animate width via JS
-  ============================================ */
-  .reading-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 3px;
-    width: 0%;
-    background: linear-gradient(
-      90deg,
-      var(--color-accent),
-      var(--color-accent-2)
-    );
-    z-index: 9999;
-    transition: width 0.1s linear;
-    border-radius: 0 99px 99px 0;
-  }
-
-  /* ============================================
-     PROSE — Blog post body
-     Rich, editorial, readable
-  ============================================ */
+  /* ══════════════════════════════════════════
+     PROSE
+  ══════════════════════════════════════════ */
   .prose {
     font-family: var(--font-body);
     font-size: 1.125rem;
@@ -387,8 +368,6 @@
     color: #2c2c2c;
     max-width: 72ch;
   }
-
-  /* ---- Drop Cap on first paragraph ---- */
   .prose > p:first-of-type::first-letter {
     font-family: var(--font-display);
     font-size: 4rem;
@@ -399,8 +378,6 @@
     margin-top: 0.08em;
     color: var(--color-accent);
   }
-
-  /* ---- Headings ---- */
   .prose h1 {
     font-family: var(--font-display);
     font-size: clamp(1.8rem, 4vw, 2.75rem);
@@ -410,7 +387,6 @@
     color: var(--color-text);
     margin: 0 0 1.5rem;
   }
-
   .prose h2 {
     font-size: 1.5rem;
     font-weight: 800;
@@ -419,13 +395,11 @@
     border-left: 4px solid var(--color-accent);
     padding-left: 0.75rem;
   }
-
   .prose h3 {
     font-size: 1.2rem;
     font-weight: 700;
     margin: 1.5rem 0 0.75rem;
   }
-
   .prose h4 {
     font-family: var(--font-ui);
     font-size: 1rem;
@@ -435,25 +409,18 @@
     color: var(--color-muted);
     margin: 1.5rem 0 0.5rem;
   }
-
-  /* ---- Paragraphs ---- */
   .prose p {
     margin: 0 0 1.4rem;
     color: #374151;
   }
-
-  /* ---- Bold & Italic ---- */
   .prose strong {
     font-weight: 700;
     color: var(--color-text);
   }
-
   .prose em {
     font-style: italic;
     color: #4b5563;
   }
-
-  /* ---- Links inside blog post ---- */
   .prose a {
     color: var(--color-accent);
     font-weight: 500;
@@ -462,31 +429,24 @@
     text-underline-offset: 3px;
     transition: var(--transition);
   }
-
   .prose a:hover {
     color: #cf4d1a;
     text-decoration-color: var(--color-accent);
   }
-
-  /* ---- Lists ---- */
   .prose ul,
   .prose ol {
     padding-left: 1.75rem;
     margin: 1.25rem 0 1.5rem;
   }
-
   .prose ul {
     list-style-type: none;
     padding-left: 0;
   }
-
   .prose ul li {
     position: relative;
     padding-left: 1.5rem;
     margin-bottom: 0.6rem;
   }
-
-  /* Custom bullet — small accent dot */
   .prose ul li::before {
     content: "";
     position: absolute;
@@ -496,13 +456,10 @@
     height: 7px;
     border-radius: 50%;
     background: var(--color-accent);
-    flex-shrink: 0;
   }
-
   .prose ol {
     list-style-type: decimal;
   }
-
   .prose li {
     font-family: var(--font-body);
     font-size: 1.05rem;
@@ -510,8 +467,6 @@
     color: #374151;
     margin-bottom: 0.5rem;
   }
-
-  /* ---- Blockquote — pull quote style ---- */
   .prose blockquote {
     position: relative;
     margin: 2.5rem 0;
@@ -521,15 +476,12 @@
       rgba(232, 93, 38, 0.04),
       rgba(29, 53, 87, 0.03)
     );
-    border-left: none;
     border-radius: var(--radius-md);
     font-style: italic;
     font-size: 1.15rem;
     color: var(--color-accent-2);
     line-height: 1.7;
   }
-
-  /* Big decorative quote mark */
   .prose blockquote::before {
     content: "\201C";
     font-family: var(--font-display);
@@ -541,13 +493,10 @@
     left: 0.75rem;
     line-height: 1;
   }
-
   .prose blockquote p {
     margin: 0;
     color: inherit;
   }
-
-  /* ---- Code ---- */
   .prose code {
     font-family: "JetBrains Mono", "Fira Code", monospace;
     font-size: 0.88rem;
@@ -557,7 +506,6 @@
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-border);
   }
-
   .prose pre {
     font-family: "JetBrains Mono", "Fira Code", monospace;
     background: var(--color-accent-2);
@@ -570,16 +518,12 @@
     line-height: 1.65;
     box-shadow: 0 4px 24px rgba(29, 53, 87, 0.18);
   }
-
   .prose pre code {
     background: none;
     color: inherit;
     border: none;
     padding: 0;
-    font-size: inherit;
   }
-
-  /* ---- Images ---- */
   .prose img {
     width: 100%;
     border-radius: var(--radius-md);
@@ -587,13 +531,10 @@
     box-shadow: var(--shadow-card);
     transition: var(--transition);
   }
-
   .prose img:hover {
     box-shadow: var(--shadow-hover);
     transform: scale(1.01);
   }
-
-  /* ---- Horizontal Rule ---- */
   .prose hr {
     border: none;
     height: 1px;
@@ -605,8 +546,6 @@
     );
     margin: 2.5rem 0;
   }
-
-  /* ---- Table ---- */
   .prose table {
     width: 100%;
     border-collapse: collapse;
@@ -614,95 +553,46 @@
     font-family: var(--font-ui);
     font-size: 0.95rem;
   }
-
   .prose thead {
     background: var(--color-accent-2);
     color: #fff;
   }
-
   .prose th {
     padding: 0.75rem 1rem;
     text-align: left;
     font-weight: 600;
     letter-spacing: 0.03em;
   }
-
   .prose td {
     padding: 0.65rem 1rem;
     border-bottom: 1px solid var(--color-border);
     color: #374151;
   }
-
   .prose tbody tr:hover {
     background: rgba(232, 93, 38, 0.04);
   }
 
-  /* ============================================
-     REACT QUILL EDITOR
-  ============================================ */
+  /* ── React Quill ── */
   .custom-editor .ql-editor {
     min-height: 300px;
-    height: auto;
     font-family: var(--font-body);
     font-size: 1.05rem;
     line-height: 1.8;
     color: var(--color-text);
     padding: 1.25rem 1.5rem;
   }
-
   .custom-editor .ql-toolbar {
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     background: #f5f3f0;
     border-color: var(--color-border);
   }
-
   .custom-editor .ql-container {
     border-radius: 0 0 var(--radius-md) var(--radius-md);
     border-color: var(--color-border);
     font-family: var(--font-body);
   }
-
   .custom-editor .ql-editor:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(232, 93, 38, 0.12);
-  }
-
-  /* ============================================
-     UTILITY — Text gradient
-  ============================================ */
-  .text-gradient {
-    background: linear-gradient(
-      135deg,
-      var(--color-accent),
-      var(--color-accent-2)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* ============================================
-     UTILITY — Section divider with label
-     Usage: <div class="section-divider">Latest Posts</div>
-  ============================================ */
-  .section-divider {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-family: var(--font-ui);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-    margin: 2.5rem 0 1.5rem;
-  }
-
-  .section-divider::before,
-  .section-divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--color-border);
   }
 }

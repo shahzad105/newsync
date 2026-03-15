@@ -3,8 +3,9 @@ import "./globals.css";
 import ReactQueryProvider from "@/components/ReactQueryProvider";
 import { Toaster } from "react-hot-toast";
 import { auth } from "@/auth";
-import SessionWrapper from "@/components/SessionWrapper";
+
 import { Analytics } from "@vercel/analytics/next";
+import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -95,10 +96,9 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" className={poppins.variable}>
-      <head></head>
-      <body className="bg-white text-black font-sans">
+      <body className="bg-white text-black font-sans" suppressHydrationWarning>
         <ReactQueryProvider>
-          <SessionWrapper session={session}>{children}</SessionWrapper>
+          <SessionProvider session={session}>{children}</SessionProvider>
           <Toaster position="top-right" />
         </ReactQueryProvider>
         <Analytics />
