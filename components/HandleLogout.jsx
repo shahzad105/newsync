@@ -14,7 +14,7 @@ export default function LogoutButton() {
     try {
       setLoading(true);
       await signOut({ redirect: false });
-      router.push("/");
+
       router.refresh();
     } catch (error) {
       toast.error(error?.message || "Something went wrong");
