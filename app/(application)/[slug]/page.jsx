@@ -198,6 +198,7 @@ export default async function PostPage({ params }) {
                 alt={post.title}
                 fill
                 priority
+                
                 className="object-cover"
                 style={{ filter: "brightness(0.82)" }}
               />

@@ -27,9 +27,19 @@ export async function GET(req) {
     if (category && category !== "All") {
       const categoryArray = category
         .split(",")
-        .map((item) => item.trim())
+        .map((item) => item.trim().toLowerCase())
         .filter(Boolean);
-      query.category = { $in: categoryArray };
+      // Use case-insensitive regex for category matching
+      if (categoryArray.length === 1) {
+        query.category = { $regex: `^${categoryArray[0]}$`, $options: "i" };
+      } else {
+        query.$or = [
+          ...(query.$or || []),
+          ...categoryArray.map((cat) => ({
+            category: { $regex: `^${cat}$`, $options: "i" },
+          })),
+        ];
+      }
     }
 
     const sortOption = latest ? { createdAt: -1 } : { createdAt: 1 };

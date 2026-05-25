@@ -12,7 +12,7 @@ const AutoCarsSection = () => {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isFetching, isError } = useGetArticles({
-    category: "Auto,Cars",
+    category: "auto,cars",
     page,
     limit: 3,
     latest: true,

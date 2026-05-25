@@ -13,7 +13,7 @@ const BusinessSection = () => {
   const [page, setPage] = useState(1);
 
   const { data, isLoading, isError, isFetching } = useGetArticles({
-    category: "International",
+    category: "international",
     limit: 5,
     page,
     latest: true,
