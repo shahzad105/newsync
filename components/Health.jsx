@@ -96,7 +96,7 @@ const Health = ({ articles = [] }) => {
                   }}
                 >
                   <Image
-                    src={post.image?.url || "/og-image.jpg"}
+                    src={post.image?.url || "/newsync.png"}
                     alt={post.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -257,7 +257,7 @@ const Health = ({ articles = [] }) => {
                     }}
                   >
                     <Image
-                      src={post.image?.url || "/og-image.jpg"}
+                      src={post.image?.url || "/newsync.png"}
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"

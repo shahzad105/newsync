@@ -198,7 +198,7 @@ const TechNewsSection = () => {
                         <Image
                           fill
                           loading="lazy"
-                          src={post.image?.url || "/og-image.jpg"}
+                          src={post.image?.url || "/newsync.png"}
                           alt={post.title}
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                           sizes="(max-width: 768px) 100vw, 33vw"

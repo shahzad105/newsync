@@ -5,6 +5,9 @@ import { fetchArticles } from "@/lib/fetchArticles";
 import HeroSkeleton from "@/skeletons/HeroSkeleton";
 import { Suspense } from "react";
 
+const siteUrl = "https://www.newsync.site";
+const defaultOgImage = "/newsync.png";
+
 export const metadata = {
   title: "NewSync — Tech, AI, Freelancing & Career Blogs",
   description:
@@ -22,19 +25,19 @@ export const metadata = {
     "productivity blogs",
   ],
   alternates: {
-    canonical: "https://www.newsync.site/",
+    canonical: siteUrl,
   },
   openGraph: {
     title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on technology, lifestyle, startups, careers, and global stories from Pakistan, the USA, and around the world.",
-    url: "https://www.newsync.site/",
+    url: siteUrl,
     type: "website",
     images: [
       {
-        url: "https://www.newsync.site/logo.png",
-        width: 1200,
-        height: 630,
+        url: defaultOgImage,
+        width: 824,
+        height: 239,
         alt: "NewSync - Trending Blogs",
       },
     ],
@@ -44,7 +47,7 @@ export const metadata = {
     title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on tech, lifestyle, startups and more on NewSync.",
-    images: ["https://www.newsync.site/og-image.jpg"],
+    images: [defaultOgImage],
   },
 };
 
@@ -54,17 +57,17 @@ const jsonLd = {
     {
       "@type": "WebSite",
       "@id": "https://www.newsync.site/#website",
-      url: "https://www.newsync.site/",
+      url: `${siteUrl}/`,
       name: "NewSync",
       description:
         "Trending blog posts from Pakistan, USA and around the world.",
       publisher: {
         "@type": "Organization",
         name: "NewSync",
-        url: "https://www.newsync.site/",
+        url: `${siteUrl}/`,
         logo: {
           "@type": "ImageObject",
-          url: "https://www.newsync.site/og-image.jpg",
+          url: `${siteUrl}${defaultOgImage}`,
         },
       },
 
@@ -72,7 +75,7 @@ const jsonLd = {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: "https://www.newsync.site/search?q={search_term_string}",
+          urlTemplate: `${siteUrl}/search/{search_term_string}`,
         },
         "query-input": "required name=search_term_string",
       },
@@ -80,7 +83,7 @@ const jsonLd = {
     {
       "@type": "Blog",
       "@id": "https://www.newsync.site/#blog",
-      url: "https://www.newsync.site/",
+      url: `${siteUrl}/`,
       name: "NewSync Blog",
       description:
         "Explore trending blog posts on technology, lifestyle, startups, careers, and global stories.",

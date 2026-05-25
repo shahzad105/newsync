@@ -44,7 +44,7 @@ export default function EditArticleForm({ action, article }) {
 
   const categories = [
     "ai",
-    "machine learning",
+    "machine-learning",
     "blockchain",
     "startups",
     "entrepreneurship",

@@ -51,7 +51,7 @@ const NavClient = ({ initialSession }) => {
     }
   };
 
-  const SearchBtn = () => (
+  const renderSearchButton = () => (
     <button
       onClick={() => setShowSearch((p) => !p)}
       aria-label="Search articles"
@@ -66,7 +66,7 @@ const NavClient = ({ initialSession }) => {
     </button>
   );
 
-  const AuthArea = () =>
+  const renderAuthArea = () =>
     isLoading ? (
       <div className="skeleton w-9 h-9 rounded-full" />
     ) : user ? (
@@ -161,14 +161,14 @@ const NavClient = ({ initialSession }) => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <SearchBtn />
-          <AuthArea />
+          {renderSearchButton()}
+          {renderAuthArea()}
         </div>
       </div>
 
       <div className="hidden md:flex items-center gap-2 flex-shrink-0 relative">
-        <SearchBtn />
-        <AuthArea />
+        {renderSearchButton()}
+        {renderAuthArea()}
       </div>
 
       {/* ── Sidebar ── */}

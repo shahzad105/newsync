@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect, useActionState } from "react";
+import { useState, useActionState } from "react";
 import Image from "next/image";
-import { useFormState } from "react-dom";
-import { useSession } from "next-auth/react";
 import SubmitButton from "./SubmitButton";
 
 export default function UpdateProfileComponent({ user, action }) {
@@ -13,25 +11,15 @@ export default function UpdateProfileComponent({ user, action }) {
   });
 
   const [formData, setFormData] = useState({
-    username: "",
+    username: user?.username || "",
     password: "",
     confirmPassword: "",
-    image: "",
+    image: user?.avatar?.url || "",
   });
 
-  const [previewImage, setPreviewImage] = useState("");
-
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        username: user.username || "",
-        password: "",
-        confirmPassword: "",
-        image: user.avatar?.url || "",
-      });
-      setPreviewImage(user.avatar?.url || "/user.png");
-    }
-  }, [user]);
+  const [previewImage, setPreviewImage] = useState(
+    user?.avatar?.url || "/user.png",
+  );
 
   // Handle form input changes
   const handleChange = (e) => {

@@ -1,0 +1,16 @@
+{
+  "name": "NewSync",
+  "short_name": "NewSync",
+  "description": "Tech, AI, freelancing, career, startup, and lifestyle blogs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "500x209",
+      "type": "image/png"
+    }
+  ]
+}

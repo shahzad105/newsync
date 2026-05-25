@@ -1,6 +1,5 @@
 import dbConnect from "@/lib/DB";
 import Article from "@/models/article";
-import User from "@/models/user";
 
 export async function GET(req) {
   try {
@@ -9,8 +8,12 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
     const category = searchParams.get("category");
-    const limit = parseInt(searchParams.get("limit")) || 10;
-    const page = parseInt(searchParams.get("page")) || 1;
+    const limitParam = Number.parseInt(searchParams.get("limit") || "10", 10);
+    const pageParam = Number.parseInt(searchParams.get("page") || "1", 10);
+    const limit = Number.isFinite(limitParam)
+      ? Math.min(Math.max(limitParam, 1), 50)
+      : 10;
+    const page = Number.isFinite(pageParam) ? Math.max(pageParam, 1) : 1;
     const latest = searchParams.get("latest") === "true";
 
     const skip = (page - 1) * limit;
@@ -22,7 +25,10 @@ export async function GET(req) {
       ];
     }
     if (category && category !== "All") {
-      const categoryArray = category.split(",");
+      const categoryArray = category
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
       query.category = { $in: categoryArray };
     }
 

@@ -12,8 +12,11 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+const siteUrl = "https://www.newsync.site";
+const defaultOgImage = "/newsync.png";
+
 export const metadata = {
-  metadataBase: new URL("https://www.newsync.site/"),
+  metadataBase: new URL(siteUrl),
 
   title: {
     default: "NewSync — Tech, AI, Freelancing & Career Blogs",
@@ -34,7 +37,7 @@ export const metadata = {
     "lifestyle blogs pakistan",
   ],
 
-  authors: [{ name: "NewSync Media", url: "https://www.newsync.site" }],
+  authors: [{ name: "NewSync Media", url: siteUrl }],
   creator: "NewSync Media",
   publisher: "NewSync",
   category: "blog",
@@ -43,13 +46,13 @@ export const metadata = {
     title: "NewSync — Tech, AI, Freelancing & Career Blogs",
     description:
       "Explore trending blog posts on technology, lifestyle, startups, and global stories — tailored to your interests on NewSync.",
-    url: "https://www.newsync.site/",
+    url: siteUrl,
     siteName: "NewSync",
     images: [
       {
-        url: "https://www.newsync.site/logo.png",
-        width: 1200,
-        height: 630,
+        url: defaultOgImage,
+        width: 824,
+        height: 239,
         alt: "NewSync - Trending Blogs from Pakistan, USA and the World",
       },
     ],
@@ -63,19 +66,19 @@ export const metadata = {
     description:
       "Explore trending blog posts on tech, lifestyle, startups, and global stories — all in one place on NewSync.",
     creator: "@newsync",
-    images: ["https://www.newsync.site/og-image.jpg"],
+    images: [defaultOgImage],
   },
 
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    apple: "/logo.png",
   },
 
   manifest: "/site.webmanifest",
 
   alternates: {
-    canonical: "https://www.newsync.site/",
+    canonical: siteUrl,
   },
 
   robots: {

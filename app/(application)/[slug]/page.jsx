@@ -9,6 +9,7 @@ export const dynamic = "force-static";
 export const revalidate = 3600;
 
 const SITE_URL = process.env.SITE_URL || "https://www.newsync.site";
+const DEFAULT_OG_IMAGE = `${SITE_URL}/newsync.png`;
 
 // ---- Helpers ----
 function getPlainText(html = "", maxLen = 160) {
@@ -51,7 +52,7 @@ export async function generateMetadata({ params }) {
     if (!post) return {};
 
     const url = `${SITE_URL}/${post.slug}`;
-    const imageUrl = post.image?.url || `${SITE_URL}/logo.png`;
+    const imageUrl = post.image?.url || DEFAULT_OG_IMAGE;
 
     const keywords = [
       post.category,
@@ -121,7 +122,7 @@ export default async function PostPage({ params }) {
   if (!post) return notFound();
 
   const url = `${SITE_URL}/${slug}`;
-  const image = post.image?.url || `${SITE_URL}/og-image.jpg`;
+  const image = post.image?.url || DEFAULT_OG_IMAGE;
   const description = getPlainText(post.description);
   const readingTime = getReadingTime(post.description || "");
   const publishDate = new Date(post.createdAt).toLocaleDateString("en-US", {
@@ -148,7 +149,7 @@ export default async function PostPage({ params }) {
       "@type": "Organization",
       name: "NewSync",
       url: SITE_URL,
-      logo: { "@type": "ImageObject", url: `${SITE_URL}/og-image.jpg` },
+      logo: { "@type": "ImageObject", url: DEFAULT_OG_IMAGE },
     },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     ...(post.tags?.length && { keywords: post.tags.join(", ") }),

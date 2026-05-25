@@ -1,9 +1,10 @@
-import Head from "next/head";
 import SearchCategory from "@/components/SearchCategory";
 import News from "@/components/News";
 import CustomPagination from "@/components/CustomPagination";
 
 import { searchArticles } from "@/lib/actions/searchArticles";
+
+const SITE_URL = process.env.SITE_URL || "https://www.newsync.site";
 
 // 1. Fix generateMetadata: await params and searchParams
 export async function generateMetadata({ params, searchParams }) {
@@ -13,7 +14,7 @@ export async function generateMetadata({ params, searchParams }) {
   const filters = sp.category?.split(",").filter(Boolean) || [];
   const pageNum = parseInt(sp.page || "1", 10);
   const categoryLabel = filters.length ? filters.join(", ") : "All";
-  const url = `${process.env.SITE_URL}/search/${encodeURIComponent(
+  const url = `${SITE_URL}/search/${encodeURIComponent(
     term
   )}?category=${encodeURIComponent(filters.join(","))}&page=${pageNum}`;
 
@@ -60,7 +61,7 @@ export default async function SearchPage({ params, searchParams }) {
       <div className="flex flex-col pt-3 gap-6">
         <div className="flex md:flex-row flex-col items-start justify-between gap-4 rounded">
           <h1 className="text-lg font-semibold text-blue-900">
-            Search Results for: "{term}"
+            Search Results for: &quot;{term}&quot;
           </h1>
           <SearchCategory filters={filters} />
         </div>
@@ -78,7 +79,7 @@ export default async function SearchPage({ params, searchParams }) {
             </>
           ) : (
             <p className="text-center text-gray-600 mt-10">
-              No results found for "{term}".
+              No results found for &quot;{term}&quot;.
             </p>
           )}
         </main>

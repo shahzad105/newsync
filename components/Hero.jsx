@@ -40,7 +40,7 @@ export default async function Hero({ articles }) {
           >
             {/* Image */}
             <Image
-              src={firstPost.image?.url || "/og-image.jpg"}
+              src={firstPost.image?.url || "/newsync.png"}
               alt={firstPost.title}
               fill
               priority
@@ -232,7 +232,7 @@ export default async function Hero({ articles }) {
               >
                 {/* Image */}
                 <Image
-                  src={post.image?.url || "/og-image.jpg"}
+                  src={post.image?.url || "/newsync.png"}
                   alt={post.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"

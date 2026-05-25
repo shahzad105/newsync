@@ -185,7 +185,7 @@ const PopularNews = () => {
                     }}
                   >
                     <Image
-                      src={post.image?.url || "/og-image.jpg"}
+                      src={post.image?.url || "/newsync.png"}
                       alt={post.title} // ✅ fixed alt text
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"

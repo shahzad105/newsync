@@ -1,43 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const allCategories = [
-  "Tech",
-  "Business",
-  "Auto",
-  "Health",
-  "Politics",
-  "Sports",
+  { value: "All", label: "All Categories" },
+  { value: "ai", label: "AI" },
+  { value: "machine-learning", label: "Machine Learning" },
+  { value: "blockchain", label: "Blockchain" },
+  { value: "startups", label: "Startups" },
+  { value: "entrepreneurship", label: "Entrepreneurship" },
+  { value: "freelancing", label: "Freelancing" },
+  { value: "jobs", label: "Jobs" },
+  { value: "careers", label: "Careers" },
+  { value: "technology", label: "Technology" },
+  { value: "apps", label: "Apps" },
+  { value: "youth", label: "Youth" },
+  { value: "productivity", label: "Productivity" },
+  { value: "lifestyle", label: "Lifestyle" },
 ];
 
 export default function SearchCategory({ filters = [] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const [selectedCategory, setSelectedCategory] = useState(filters[0] || "All");
+  const selectedCategory = searchParams.get("category") || filters[0] || "All";
 
   const handleChange = (e) => {
     const value = e.target.value;
-    setSelectedCategory(value);
 
-    // Preserve existing params
     const params = new URLSearchParams(searchParams);
     params.set("category", value);
-    params.set("page", "1"); 
+    params.set("page", "1");
     router.push(`?${params.toString()}`);
   };
-
-  useEffect(() => {
-    const category = searchParams.get("category");
-    if (!category) {
-      setSelectedCategory("All");
-      const params = new URLSearchParams(searchParams);
-      params.set("category", "All");
-      router.replace(`?${params.toString()}`);
-    }
-  }, [searchParams, router]);
 
   return (
     <div className="flex gap-3 items-center">
@@ -47,10 +41,9 @@ export default function SearchCategory({ filters = [] }) {
         onChange={handleChange}
         className="border px-2 md:px-3 py-2 rounded"
       >
-        <option value="All">All Categories</option>
         {allCategories.map((cat) => (
-          <option key={cat} value={cat}>
-            {cat}
+          <option key={cat.value} value={cat.value}>
+            {cat.label}
           </option>
         ))}
       </select>

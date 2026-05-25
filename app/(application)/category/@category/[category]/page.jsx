@@ -50,7 +50,7 @@ export async function generateMetadata({ params, searchParams }) {
       ? `${SITE_URL}/category/${categoryParam}`
       : `${SITE_URL}/category/${categoryParam}?page=${pageNum}`;
 
-  const ogImage = `${SITE_URL}/logo.png`;
+  const ogImage = `${SITE_URL}/newsync.png`;
 
   return {
     title,
@@ -74,8 +74,8 @@ export async function generateMetadata({ params, searchParams }) {
       images: [
         {
           url: ogImage,
-          width: 1200,
-          height: 630,
+          width: 824,
+          height: 239,
           alt: `${formattedCategory} Blogs`,
         },
       ],
@@ -104,7 +104,7 @@ export default async function CategoryPage({ params, searchParams }) {
 
   try {
     const res = await fetch(
-      `${SITE_URL}/api/articles?category=${formattedCategory}&limit=6&page=${pageNum}&latest=true`,
+      `${SITE_URL}/api/articles?category=${categoryParam}&limit=6&page=${pageNum}&latest=true`,
       { next: { revalidate: 60 } },
     );
     const data = await res.json();
@@ -234,7 +234,7 @@ export default async function CategoryPage({ params, searchParams }) {
                 No posts yet in {formattedCategory}
               </h2>
               <p style={{ fontSize: "0.9rem", marginBottom: "1.5rem" }}>
-                We're working on it. Check back soon or explore another
+                We&apos;re working on it. Check back soon or explore another
                 category.
               </p>
               <Link href="/" className="btn-primary">
